@@ -8,27 +8,12 @@ use Validator;
 use App\Models\Member\Member;
 use App\Models\Payment\Payment;
 use App\Http\Resources\HomepageResource;
+use Auth;
 
 class HomeController extends Controller
 {
     public function index(Request $request){
-        $validator =Validator::make(
-            $request->all(), [
-                'member_reg_id' =>'required',
-            ]
-        );
-
-        if ($validator->fails() ) {
-            return response()->json(
-                [
-                    'success' => false,
-                    'message' => $validator->errors(),
-                ], 500
-            );
-        }
-
-        $valid_data =$validator->valid();
-        $member =Member::where('member_reg_id',$valid_data['member_reg_id'])->first();
+        $member =Member::where('id',Auth::user()->member_id)->first();
         if (!$member) {
             return response()->json(
                 [

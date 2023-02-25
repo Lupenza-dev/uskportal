@@ -17,8 +17,7 @@ use App\Http\Controllers\Api\V1\HomeController;
 */
 
 Route::post('authentication',[AuthController::class,'userLogin']);
-Route::post('homepage',[HomeController::class,'index']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['middleware'=>'auth:sanctum','prefix'=>'V1'],function(){
+    Route::post('homepage',[HomeController::class,'index']);
 });

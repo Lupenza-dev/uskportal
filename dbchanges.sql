@@ -3,4 +3,6 @@ CREATE TABLE `usk`.`payments` ( `id` INT NOT NULL AUTO_INCREMENT , `member_id` I
 ALTER TABLE `payments` ADD `payment_date` DATE NULL DEFAULT NULL AFTER `approved_by`;
 ALTER TABLE `members` ADD `member_reg_id` VARCHAR(20) NULL DEFAULT NULL AFTER `dob`;
 INSERT INTO `members` (`id`, `first_name`, `middle_name`, `last_name`, `phone_number`, `dob`, `member_reg_id`, `uuid`, `created_at`, `updated_at`) VALUES (NULL, 'Fochuu', 'Edes', 'Shayo', '255683130185', '2014-02-06', 'USK02', 'sdsesssss', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO `payments` (`id`, `member_id`, `amount`, `payment_reference`, `payment_number`, `payment_type`, `remark`, `added_by`, `approved_by`, `payment_date`, `created_at`, `updated_at`) VALUES (NULL, '1', '50000', 'stockyhdydyd', '255683', 'Stock', 'success', '1', '1', '2023-02-01', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `payments` (`id`, `member_id`, `amount`, `payment_reference`, `payment_number`, `payment_type`, `remark`, `added_by`, `approved_by`, `payment_date`, `created_at`, `updated_at`) VALUES (NULL, '1', '50000', 'stockyhdydyd', '255683', 'Stock', 'success', '1', '1', '2023-02-01', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);   
+ALTER TABLE `users` ADD `member_id` INT NOT NULL AFTER `id`;
+UPDATE `users` SET `member_id` = '1' WHERE `users`.`id` = 1;

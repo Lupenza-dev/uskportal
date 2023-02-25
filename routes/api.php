@@ -18,6 +18,6 @@ use App\Http\Controllers\Api\V1\HomeController;
 
 Route::post('authentication',[AuthController::class,'userLogin']);
 
-Route::group(['middleware'=>'auth:sanctum','prefix'=>'V1'],function(){
+Route::group(['middleware'=>'auth:api','prefix'=>'V1'],function(){
     Route::post('homepage',[HomeController::class,'index']);
 });

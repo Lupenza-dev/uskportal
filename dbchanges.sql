@@ -1,8 +1,87 @@
-CREATE TABLE `usk`.`members` ( `id` INT NOT NULL AUTO_INCREMENT , `first_name` VARCHAR(100) NOT NULL , `middle_name` VARCHAR(100) NULL DEFAULT NULL , `last_name` VARCHAR(100) NULL DEFAULT NULL , `phone_number` VARCHAR(20) NOT NULL , `dob` DATE NULL DEFAULT NULL , `uuid` VARCHAR(100) NOT NULL , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;
-CREATE TABLE `usk`.`payments` ( `id` INT NOT NULL AUTO_INCREMENT , `member_id` INT NOT NULL , `amount` FLOAT NOT NULL , `payment_reference` VARCHAR(100) NOT NULL , `payment_number` INT(20) NOT NULL , `payment_type` VARCHAR(50) NOT NULL , `remark` VARCHAR(20) NOT NULL , `added_by` INT NOT NULL , `approved_by` INT NOT NULL , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;
-ALTER TABLE `payments` ADD `payment_date` DATE NULL DEFAULT NULL AFTER `approved_by`;
-ALTER TABLE `members` ADD `member_reg_id` VARCHAR(20) NULL DEFAULT NULL AFTER `dob`;
-INSERT INTO `members` (`id`, `first_name`, `middle_name`, `last_name`, `phone_number`, `dob`, `member_reg_id`, `uuid`, `created_at`, `updated_at`) VALUES (NULL, 'Fochuu', 'Edes', 'Shayo', '255683130185', '2014-02-06', 'USK02', 'sdsesssss', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO `payments` (`id`, `member_id`, `amount`, `payment_reference`, `payment_number`, `payment_type`, `remark`, `added_by`, `approved_by`, `payment_date`, `created_at`, `updated_at`) VALUES (NULL, '1', '50000', 'stockyhdydyd', '255683', 'Stock', 'success', '1', '1', '2023-02-01', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);   
-ALTER TABLE `users` ADD `member_id` INT NOT NULL AFTER `id`;
-UPDATE `users` SET `member_id` = '1' WHERE `users`.`id` = 1;
+-- phpMyAdmin SQL Dump
+-- version 5.1.0
+-- https://www.phpmyadmin.net/
+--
+-- Host: localhost:8889
+-- Generation Time: Feb 27, 2023 at 08:28 PM
+-- Server version: 5.7.34
+-- PHP Version: 8.0.8
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `usk`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `loan_contracts`
+--
+
+CREATE TABLE `loan_contracts` (
+  `id` int(11) NOT NULL,
+  `member_id` int(11) NOT NULL,
+  `loan_application_id` int(11) NOT NULL,
+  `loan_type` varchar(20) DEFAULT NULL,
+  `total_amount` float NOT NULL,
+  `total_loan_amount` float DEFAULT NULL,
+  `installment_amount` float NOT NULL,
+  `plan` int(11) NOT NULL,
+  `fee_amount` float DEFAULT NULL,
+  `interest_amount` float DEFAULT NULL,
+  `interest_rate` float DEFAULT NULL,
+  `status` varchar(20) NOT NULL,
+  `current_balance` float NOT NULL,
+  `outstanding_amount` float NOT NULL,
+  `contract_code` varchar(20) NOT NULL,
+  `start_date` date DEFAULT NULL,
+  `expected_end_date` date DEFAULT NULL,
+  `past_due_days` int(11) DEFAULT NULL,
+  `past_due_amount` float DEFAULT NULL,
+  `penalt_amount` float DEFAULT NULL,
+  `penalt_amount_paid` float DEFAULT NULL,
+  `uuid` varchar(100) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `loan_contracts`
+--
+
+INSERT INTO `loan_contracts` (`id`, `member_id`, `loan_application_id`, `loan_type`, `total_amount`, `total_loan_amount`, `installment_amount`, `plan`, `fee_amount`, `interest_amount`, `interest_rate`, `status`, `current_balance`, `outstanding_amount`, `contract_code`, `start_date`, `expected_end_date`, `past_due_days`, `past_due_amount`, `penalt_amount`, `penalt_amount_paid`, `uuid`, `created_at`, `updated_at`) VALUES
+(1, 1, 1, 'emergence loan', 100000, 120000, 40000, 6, 10000, 10, 10, 'GRANTED', 35000, 75000, 'xc4555', '2023-02-01', '2023-02-24', 0, 0, 0, 0, 'errffff-poooop', '2023-02-27 20:27:34', '2023-02-27 20:27:34');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `loan_contracts`
+--
+ALTER TABLE `loan_contracts`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `loan_contracts`
+--
+ALTER TABLE `loan_contracts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

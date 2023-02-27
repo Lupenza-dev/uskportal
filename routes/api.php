@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\HomeController;
+use App\Http\Controllers\Api\V1\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,4 +21,5 @@ Route::post('authentication',[AuthController::class,'userLogin']);
 
 Route::group(['middleware'=>'auth:api','prefix'=>'V1'],function(){
     Route::post('homepage',[HomeController::class,'index']);
+    Route::post('member-payments',[PaymentController::class,'index']);
 });

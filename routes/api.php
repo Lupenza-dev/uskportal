@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\HomeController;
 use App\Http\Controllers\Api\V1\PaymentController;
+use App\Http\Controllers\Api\V1\LoanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,4 +23,5 @@ Route::post('authentication',[AuthController::class,'userLogin']);
 Route::group(['middleware'=>'auth:api','prefix'=>'V1'],function(){
     Route::post('homepage',[HomeController::class,'index']);
     Route::post('member-payments',[PaymentController::class,'index']);
+    Route::post('member-loans',[LoanController::class,'loanContracts']);
 });

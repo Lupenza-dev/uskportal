@@ -4,15 +4,14 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Resources\LoanContractResource;
 use App\Models\Member\Member;
-use App\Models\Payment\Payment;
-use App\Http\Resources\PaymentResource;
-use Auth; 
+use Auth;
 
-class PaymentController extends Controller
+class LoanController extends Controller
 {
-    public function index(Request $request){
-        $member =Member::with('payments')->where('id',Auth::user()->member_id)->first();
+    public function loanContracts(){
+        $member =Member::with('loan_contracts')->where('id',Auth::user()->member_id)->first();
         if (!$member) {
             return response()->json(
                 [
@@ -24,8 +23,8 @@ class PaymentController extends Controller
 
         return response()->json([
             'success' =>true,
-            'message' =>'Member Payments',
-            'data'    =>PaymentResource::collection($member->payments)
+            'message' =>'Member Loan Contracts',
+            'data'    =>LoanContractResource::collection($member->loan_contracts)
         ],200);
     }
 }

@@ -13,7 +13,7 @@ use Auth;
 class HomeController extends Controller
 {
     public function index(Request $request){
-        $member =Member::where('id',Auth::user()->member_id)->first();
+        $member =Member::with('payments','member_saving')->where('id',Auth::user()->member_id)->first();
         if (!$member) {
             return response()->json(
                 [

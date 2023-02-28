@@ -24,5 +24,9 @@ class Member extends Model
         return $this->hasMany(LoanApplication::class);
     }
 
+    public function member_saving(){
+        return $this->hasOne(MemberSavingSummary::class);
+    }
+
 
 }

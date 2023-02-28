@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Feb 27, 2023 at 08:28 PM
+-- Generation Time: Feb 28, 2023 at 06:38 AM
 -- Server version: 5.7.34
 -- PHP Version: 8.0.8
 
@@ -24,51 +24,38 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `loan_contracts`
+-- Table structure for table `member_saving_summaries`
 --
 
-CREATE TABLE `loan_contracts` (
+CREATE TABLE `member_saving_summaries` (
   `id` int(11) NOT NULL,
   `member_id` int(11) NOT NULL,
-  `loan_application_id` int(11) NOT NULL,
-  `loan_type` varchar(20) DEFAULT NULL,
-  `total_amount` float NOT NULL,
-  `total_loan_amount` float DEFAULT NULL,
-  `installment_amount` float NOT NULL,
-  `plan` int(11) NOT NULL,
-  `fee_amount` float DEFAULT NULL,
-  `interest_amount` float DEFAULT NULL,
-  `interest_rate` float DEFAULT NULL,
-  `status` varchar(20) NOT NULL,
-  `current_balance` float NOT NULL,
-  `outstanding_amount` float NOT NULL,
-  `contract_code` varchar(20) NOT NULL,
-  `start_date` date DEFAULT NULL,
-  `expected_end_date` date DEFAULT NULL,
-  `past_due_days` int(11) DEFAULT NULL,
-  `past_due_amount` float DEFAULT NULL,
-  `penalt_amount` float DEFAULT NULL,
-  `penalt_amount_paid` float DEFAULT NULL,
+  `total_saving` float NOT NULL,
+  `current_saving` float DEFAULT '0',
+  `holded_saving` float NOT NULL DEFAULT '0',
+  `last_saving_amount` float NOT NULL,
+  `last_saving_date` datetime DEFAULT NULL,
+  `total_monthly_fees` float DEFAULT NULL,
   `uuid` varchar(100) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `loan_contracts`
+-- Dumping data for table `member_saving_summaries`
 --
 
-INSERT INTO `loan_contracts` (`id`, `member_id`, `loan_application_id`, `loan_type`, `total_amount`, `total_loan_amount`, `installment_amount`, `plan`, `fee_amount`, `interest_amount`, `interest_rate`, `status`, `current_balance`, `outstanding_amount`, `contract_code`, `start_date`, `expected_end_date`, `past_due_days`, `past_due_amount`, `penalt_amount`, `penalt_amount_paid`, `uuid`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 'emergence loan', 100000, 120000, 40000, 6, 10000, 10, 10, 'GRANTED', 35000, 75000, 'xc4555', '2023-02-01', '2023-02-24', 0, 0, 0, 0, 'errffff-poooop', '2023-02-27 20:27:34', '2023-02-27 20:27:34');
+INSERT INTO `member_saving_summaries` (`id`, `member_id`, `total_saving`, `current_saving`, `holded_saving`, `last_saving_amount`, `last_saving_date`, `total_monthly_fees`, `uuid`, `created_at`, `updated_at`) VALUES
+(1, 1, 500000, 400000, 100000, 50000, '2023-02-28 06:37:38', 300000, 'frsrrssss', '2023-02-28 06:38:13', '2023-02-28 06:38:13');
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `loan_contracts`
+-- Indexes for table `member_saving_summaries`
 --
-ALTER TABLE `loan_contracts`
+ALTER TABLE `member_saving_summaries`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -76,9 +63,9 @@ ALTER TABLE `loan_contracts`
 --
 
 --
--- AUTO_INCREMENT for table `loan_contracts`
+-- AUTO_INCREMENT for table `member_saving_summaries`
 --
-ALTER TABLE `loan_contracts`
+ALTER TABLE `member_saving_summaries`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 

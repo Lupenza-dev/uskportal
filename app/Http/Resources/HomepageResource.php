@@ -19,13 +19,13 @@ class HomepageResource extends JsonResource
     {
         return [
             'payments'     =>PaymentResource::collection($this->payments),
-            'group_total'  =>(MemberSavingSummary::sum('total_saving') + MemberSavingSummary::sum('total_monthly_fees')),
-            'group_total_loan'      =>LoanContract::sum('total_loan_amount'),
-            'group_current_balance' =>LoanContract::sum('current_balance'),
-            'group_outstanding'     =>LoanContract::sum('outstanding_amount'),
-            'member_saving'         =>$this->member_saving->total_saving,
-            'member_monthly_fee'    =>$this->member_saving->total_monthly_fees,
-            'member_total_saving'   =>$this->member_saving->total_monthly_fees + $this->member_saving->total_saving,
+            'group_total'  =>number_format((MemberSavingSummary::sum('total_saving') + MemberSavingSummary::sum('total_monthly_fees'))),
+            'group_total_loan'      =>number_format(LoanContract::sum('total_loan_amount')),
+            'group_current_balance' =>number_format(LoanContract::sum('current_balance')),
+            'group_outstanding'     =>number_format(LoanContract::sum('outstanding_amount')),
+            'member_saving'         =>number_format($this->member_saving->total_saving),
+            'member_monthly_fee'    =>number_format($this->member_saving->total_monthly_fees),
+            'member_total_saving'   =>number_format($this->member_saving->total_monthly_fees + $this->member_saving->total_saving),
         ];
     }
 }

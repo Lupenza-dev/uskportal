@@ -28,4 +28,14 @@ class PaymentController extends Controller
             'data'    =>PaymentResource::collection($member->payments)
         ],200);
     }
+
+    public function allPayments(){
+        $payments =Payment::latest()->get();
+        return response()->json([
+            'success' =>true,
+            'message' =>'Member Payments',
+            'data'    =>PaymentResource::collection($payments)
+        ],200);
+
+    }
 }

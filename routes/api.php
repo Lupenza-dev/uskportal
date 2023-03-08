@@ -19,9 +19,12 @@ use App\Http\Controllers\Api\V1\LoanController;
 */
 
 Route::post('authentication',[AuthController::class,'userLogin']);
+//Route::get('V1/group-summary',[HomeController::class,'groupSummary']);
 
 Route::group(['middleware'=>'auth:api','prefix'=>'V1'],function(){
     Route::post('homepage',[HomeController::class,'index']);
-    Route::post('member-payments',[PaymentController::class,'index']);
+    Route::get('group-summary',[HomeController::class,'groupSummary']);
+    Route::get('all-member-payments',[PaymentController::class,'allPayments']);
     Route::post('member-loans',[LoanController::class,'loanContracts']);
+    Route::get('all-member-loans',[LoanController::class,'AllLoanContracts']);
 });

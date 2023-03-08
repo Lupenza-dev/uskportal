@@ -23,8 +23,9 @@ Route::post('authentication',[AuthController::class,'userLogin']);
 
 Route::group(['middleware'=>'auth:api','prefix'=>'V1'],function(){
     Route::post('homepage',[HomeController::class,'index']);
-    Route::get('group-summary',[HomeController::class,'groupSummary']);
-    Route::get('all-member-payments',[PaymentController::class,'allPayments']);
+    Route::post('group-summary',[HomeController::class,'groupSummary']);
+    Route::post('all-member-payments',[PaymentController::class,'allPayments']);
+    Route::post('member-payments',[PaymentController::class,'index']);
     Route::post('member-loans',[LoanController::class,'loanContracts']);
-    Route::get('all-member-loans',[LoanController::class,'AllLoanContracts']);
+    Route::post('all-member-loans',[LoanController::class,'AllLoanContracts']);
 });

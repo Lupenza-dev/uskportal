@@ -12,6 +12,9 @@ class Member extends Model
 {
     use HasFactory;
 
+    protected $fillable =['first_name','middle_name','last_name','phone_number','dob','member_reg_id','email','id_type_id','id_number',
+    'uuid','created_by','status'];
+
     public function payments(){
         return $this->hasMany(Payment::class);
     }
@@ -26,6 +29,26 @@ class Member extends Model
 
     public function member_saving(){
         return $this->hasOne(MemberSavingSummary::class);
+    }
+
+    public function initiated_loan_application(){
+        return $this->hasOne(LoanApplication::class)->where('level','initiated');
+    }
+
+    public function getMemberNameAttribute(){
+        return ucwords($this->first_name.' '.$this->last_name);
+    }
+
+    public function stock_payments(){
+        return $this->hasMany(Payment::class)->where('payment_type','stock')->latest();
+    }
+
+    public function fee_payments(){
+        return $this->hasMany(Payment::class)->where('payment_type','fee')->latest();
+    }
+
+    public function id_type(){
+        return $this->belongsTo(IdType::class);
     }
 
 

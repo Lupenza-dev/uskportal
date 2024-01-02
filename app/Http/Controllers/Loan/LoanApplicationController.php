@@ -51,13 +51,13 @@ class LoanApplicationController extends Controller
 
         $loan_application =LoanApplication::store($vali_data);
 
-        foreach ($vali_data['guarantors'] as $key => $value) {
-            $guarantor =LoanGuarantor::create([
-                'member_id'           =>$value,
-                'loan_application_id' =>$loan_application->id,
-                'uuid'                =>(string)Str::orderedUuid()
-            ]);
-        }
+        // foreach ($vali_data['guarantors'] as $key => $value) {
+        //     $guarantor =LoanGuarantor::create([
+        //         'member_id'           =>$value,
+        //         'loan_application_id' =>$loan_application->id,
+        //         'uuid'                =>(string)Str::orderedUuid()
+        //     ]);
+        // }
 
         return response()->json([
             'success' =>true,

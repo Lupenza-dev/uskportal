@@ -19,7 +19,7 @@ class LoanApplication extends Model
         $amount     =$loan_data['amount'];
         $plan       =$loan_data['plan'] ?? 1;
         $loan_type  =$loan_data['loan_type'];
-        $guarantors =$loan_data['guarantors'];
+        // $guarantors =$loan_data['guarantors'];
 
         if ($loan_type == 2) {
             $total_loan_amount =$amount * 1.08;

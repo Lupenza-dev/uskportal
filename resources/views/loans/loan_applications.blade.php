@@ -110,7 +110,7 @@
                         <label for="Name">Plan</label>
                         <input type="number" class="form-control" name="plan" placeholder="Repayment plan.....">
                     </div>
-                    <div class="col-md-12 mt-1">
+                    <!-- <div class="col-md-12 mt-1">
                         <label for="">Guarantors</label>
                         <div>
                             @foreach ($members as $member)
@@ -118,7 +118,7 @@
                             <label for="member"> {{ $member->first_name.' '.$member->last_name }}</label> <br>
                             @endforeach
                         </div>
-                    </div>
+                    </div> -->
                     <div class="col-md-12 mt-1" style="margin-top: 5px" id="alert">
                     </div>
                     <div class="col-md-12 mt-1">

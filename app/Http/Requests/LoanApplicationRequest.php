@@ -26,7 +26,7 @@ class LoanApplicationRequest extends FormRequest
         return [
             'amount'     =>'required',
             'loan_type'  =>'required',
-            'guarantors' =>'required',
+            // 'guarantors' =>'required',
             'plan'       =>'required',
         ];
     }

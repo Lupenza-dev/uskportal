@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Payment\PaymentLog;
+use Carbon\Carbon;
 
 //check_time
 if (!function_exists('greeting')) {
@@ -38,6 +39,24 @@ if (!function_exists('paymentReference')) {
         while(!empty($payment));
         return $reference;
     }
+}
+
+
+if(!function_exists('processDate')){
+    function processDate($inputDate) {
+        // Convert the input date string to a Carbon instance
+        $carbonDate = Carbon::parse($inputDate);
+    
+        // Check if the day of the month is less than 20
+        if ($carbonDate->day < 20) {
+            // If it's less than 20, return the input date
+            return $carbonDate;
+        } else {
+            // If it's 20 or greater, return the end of the month
+            return $carbonDate->endOfMonth();
+        }
+    }
+
 }
 
 

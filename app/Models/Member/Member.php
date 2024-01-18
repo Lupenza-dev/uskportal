@@ -13,7 +13,7 @@ class Member extends Model
     use HasFactory;
 
     protected $fillable =['first_name','middle_name','last_name','phone_number','dob','member_reg_id','email','id_type_id','id_number',
-    'uuid','created_by','status'];
+    'uuid','created_by','status','member_type'];
 
     public function payments(){
         return $this->hasMany(Payment::class);
@@ -49,6 +49,29 @@ class Member extends Model
 
     public function id_type(){
         return $this->belongsTo(IdType::class);
+    }
+
+    public function getMemberTypesAttribute(){
+        switch ($this->member_type) {
+            case 1:
+                $type ="Original Member";
+                break;
+
+            case 2:
+                $type ="Refered Member";
+                break;
+            
+            default:
+                $type ="Original Member";
+                break;
+
+        }
+
+        return $type;
+    }
+
+    public function member_refered(){
+        return $this->hasOne(MemberReference::class,'member_id');
     }
 
 

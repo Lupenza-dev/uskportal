@@ -15,9 +15,9 @@ class LoanApplication extends Model
     protected $fillable=['member_id','amount','total_loan_amount','plan','installment_amount','fee_amount','interest_amount','interest_rate',
     'loan_type_id','loan_code','uuid','level'];
 
-    public static function store($loan_data){
+    public static function store($loan_data,$plan){
         $amount     =$loan_data['amount'];
-        $plan       =$loan_data['plan'] ?? 1;
+        $plan       =$plan;
         $loan_type  =$loan_data['loan_type'];
         // $guarantors =$loan_data['guarantors'];
 
@@ -71,6 +71,10 @@ class LoanApplication extends Model
 
     public function loan_type(){
         return $this->hasOne(LoanType::class,'id','loan_type_id');
+    }
+
+    public function guarantors(){
+        return $this->hasMany(LoanGuarantor::class,'loan_application_id');
     }
 
     public function getStatusFormatAttribute(){

@@ -14,7 +14,7 @@ class LoanContract extends Model
     use HasFactory;
 
     protected $fillable=['member_id','loan_application_id','loan_type_id','total_amount','total_loan_amount','installment_amount','plan',
-    'fee_amount','interest_amount','interest_rate','status','outstanding_amount','contract_code','start_date','expected_end_date','created_by','uuid'];
+    'fee_amount','interest_amount','interest_rate','status','outstanding_amount','contract_code','start_date','expected_end_date','created_by','uuid','disbursment_date'];
 
     public function member(){
         return $this->belongsTo(Member::class);
@@ -39,8 +39,9 @@ class LoanContract extends Model
         'status'             =>"GRANTED",
         'outstanding_amount' =>$loan_data['total_loan_amount'],
         'contract_code'      =>$loan_data['loan_code'],
-        'start_date'         =>$request_data['payment_date'],
-        'expected_end_date'  =>date('Y-m-d', strtotime("+".$loan_data["plan"]."months", strtotime($request_data['payment_date']))),
+        'start_date'         =>processDate($request_data['payment_date']),
+        'disbursment_date'   =>$request_data['payment_date'],
+        'expected_end_date'  =>date('Y-m-d', strtotime("+".$loan_data["plan"]."months", strtotime(processDate($request_data['payment_date'])))),
         'uuid'               =>(string)Str::orderedUuid(),
         'created_by'         =>Auth::user()->id,
        ]);

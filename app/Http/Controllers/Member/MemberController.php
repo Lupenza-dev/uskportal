@@ -7,12 +7,13 @@ use Illuminate\Http\Request;
 use App\Models\Member\Member;
 use App\Models\Member\IdType;
 use App\Http\Requests\MemberStoreRequest;
+use App\Models\Member\MemberReference;
 use Auth;
 use Str;
 use Spatie\Permission\Models\Role;
 use App\Models\User;
 use Hash;
-
+use Illuminate\Support\Facades\DB;
 
 class MemberController extends Controller
 {
@@ -47,23 +48,35 @@ class MemberController extends Controller
     public function store(MemberStoreRequest $request)
     {
 
-        $valid_data =$request->validated();
-        $member =Member::create($valid_data + [
-            'uuid'       =>(string)Str::ordereduuid(),
-            'created_by' =>Auth::user()->id,
-            'member_reg_id' =>"USK".mt_rand(00001 ,99999)
-        ]);
+        DB::transaction(function() use($request) {
 
-        $user =User::create([
-            'name'         =>$member->first_name.' '.$member->last_name,
-            'email'        =>$member->email,
-            'phone_number' =>$member->phone_number,
-            'member_id'    =>$member->id,
-            'password'     =>Hash::make(123456),
-            'uuid'         =>(string)Str::ordereduuid(),
-        ]);
+            $valid_data =$request->validated();
+            $member =Member::create($valid_data + [
+                'uuid'       =>(string)Str::ordereduuid(),
+                'created_by' =>Auth::user()->id,
+                'member_reg_id' =>"USK".mt_rand(00001 ,99999),
+            ]);
 
-        $user->assignRole('Member');
+            if ($member->member_type == 2) {
+                $reference =MemberReference::create([
+                    'member_id' =>$member->id,
+                    'refer_member_id' =>$request->guarantor_member,
+                    'uuid'       =>(string)Str::ordereduuid(),
+                ]);
+            }
+
+            $user =User::create([
+                'name'         =>$member->first_name.' '.$member->last_name,
+                'email'        =>$member->email,
+                'phone_number' =>$member->phone_number,
+                'member_id'    =>$member->id,
+                'password'     =>Hash::make(123456),
+                'uuid'         =>(string)Str::ordereduuid(),
+            ]);
+
+            $user->assignRole('Member');
+        });
+        
 
         return response()->json([
             'success' =>true,

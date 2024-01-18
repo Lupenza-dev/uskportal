@@ -7,8 +7,9 @@ use Illuminate\Http\Request;
 use App\Http\Requests\LoanStoreRequest;
 use App\Models\Loan\LoanApplication;
 use App\Models\Loan\LoanContract;
+use App\Models\Loan\LoanGuarantor;
 use App\Models\Payment\Payout;
-
+use Illuminate\Support\Facades\Log;
 
 class LoanController extends Controller
 {
@@ -43,13 +44,13 @@ class LoanController extends Controller
     {
         $request_data = $request->validated();
         $loan_application =LoanApplication::where('uuid',$request_data['uuid'])->first();
-
-        // if ($loan_application->level != "Application") {
-        //     return response()->json([
-        //         'success' =>false,
-        //         'errors' =>"Loan Application is not Approved By Guarantors",
-        //     ],500);
-        // }
+       
+        if ($loan_application->guarantors()->where('status','!=','Approved')->count()) {
+            return response()->json([
+                'success' =>false,
+                'errors' =>"Loan Application not approved or rejected by Guarantor",
+            ],500);
+        }
 
         if ($loan_application->active_contract) {
             return response()->json([

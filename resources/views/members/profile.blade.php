@@ -75,6 +75,16 @@
                                     <th>ID Number</th>
                                     <td>{{ $member->id_number}}</td>
                                 </tr>
+                                <tr>
+                                    <th>Member Type</th>
+                                    <td>{{ $member->member_types}}</td>
+                                </tr>
+                                @if ($member->member_refered)
+                                   <tr>
+                                    <th>Guarantor Member</th>
+                                    <td>{{ $member->member_refered->member?->member_name}}</td>
+                                </tr> 
+                                @endif
                                </tbody>
                             </table>
                         </div>

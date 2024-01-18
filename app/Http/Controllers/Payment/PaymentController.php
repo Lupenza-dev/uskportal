@@ -37,7 +37,7 @@ class PaymentController extends Controller
 
     public function pendingPayments()
     {   
-        $payments =PaymentRequest::with('member','loan')->latest()->get();
+        $payments =PaymentRequest::with('member','loan')->where('status',0)->orWhere('status',2)->latest()->get();
         return view('payments.all_payment_request',compact('payments'));
     }
 

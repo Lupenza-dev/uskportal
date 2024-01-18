@@ -26,6 +26,12 @@
             <span key="t-file-manager">Granted Loans</span>
         </a>
     </li>
+    <li>
+        <a href="{{ route('loan.guarantors')}}" class="waves-effect">
+            <i class="bx bx-list-ol"></i>
+            <span key="t-file-manager">Loan Guaranting</span>
+        </a>
+    </li>
     <li class="menu-title" key="t-menu">Payment Report</li>
     <li>
         <a href="{{ route('payment.index')}}" class="waves-effect">

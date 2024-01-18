@@ -61,7 +61,7 @@
                                         <td>{{ $loan->loan_type->name ?? "N/A"}}</td>
                                         <td>{!! $loan->status_format !!}</td>
                                         <td>
-                                            @if ($loan->level == "Application")
+                                            @if ($loan->level == "initiated")
                                               <button class="btn btn-success btn-sm edit-btn" data-uuid="{{ $loan->uuid}}" data-amount ="{{ $loan->amount }}" data-bs-toggle="modal" data-bs-target="#myModal1" > <span class="fa fa-edit"></span></button>
                                             @else
                                               <button class="btn btn-success btn-sm edit-btn" onclick="alert('Loan Application Already Disbursed')" > <span class="fa fa-edit"></span></button>
@@ -110,7 +110,7 @@
                         <label for="Name">Plan</label>
                         <input type="number" class="form-control" name="plan" placeholder="Repayment plan.....">
                     </div>
-                    <!-- <div class="col-md-12 mt-1">
+                     <div class="col-md-12 mt-1">
                         <label for="">Guarantors</label>
                         <div>
                             @foreach ($members as $member)
@@ -118,7 +118,7 @@
                             <label for="member"> {{ $member->first_name.' '.$member->last_name }}</label> <br>
                             @endforeach
                         </div>
-                    </div> -->
+                    </div> 
                     <div class="col-md-12 mt-1" style="margin-top: 5px" id="alert">
                     </div>
                     <div class="col-md-12 mt-1">
@@ -158,7 +158,7 @@
                     </div>
                     <div class="col-md-12">
                         <label for="Name">Payment date</label>
-                        <input type="date" class="form-control" name="payment_date" max="{{ date('Y-m-d')}}" required>
+                        <input type="date" class="form-control" max="{{ date('Y-m-d')}}" name="payment_date"  required>
                     </div>
                     <div class="col-md-12" style="margin-top: 5px" id="update_alert">
                     </div>
@@ -251,14 +251,12 @@
       cache: false,
       processData : false,
       success:function(response){
-        console.log(response);
-        $('#alert').html('<div class="alert alert-success">'+response.message+'</div>');
+        $('#update_alert').html('<div class="alert alert-success">'+response.message+'</div>');
         setTimeout(function(){
          window.location="{{ route('loan.index')}}"
       },500);
       },
       error:function(response){
-          console.log(response.responseText);
           if (jQuery.type(response.responseJSON.errors) == "object") {
             $('#update_alert').html('');
           $.each(response.responseJSON.errors,function(key,value){

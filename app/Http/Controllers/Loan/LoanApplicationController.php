@@ -11,7 +11,7 @@ use Auth;
 use Str;
 use App\Models\Member\Member;
 use App\Http\Requests\LoanApplicationRequest;
-
+use Carbon\Carbon;
 
 class LoanApplicationController extends Controller
 {
@@ -26,6 +26,11 @@ class LoanApplicationController extends Controller
         $loan_types =LoanType::get();
         $loans      =LoanApplication::with('member','loan_type')->whereNot('level','CANCELED')->latest()->get();
         return view('loans.loan_applications',compact('loan_types','members','loans'));
+    }
+
+    public function loanGuarantor(){
+        $requests =LoanGuarantor::with('loan','loan.member')->where('member_id',Auth::user()->member_id)->get();
+        return view('loans.loan_request',compact('requests'));
     }
 
     /**
@@ -47,17 +52,27 @@ class LoanApplicationController extends Controller
     public function store(LoanApplicationRequest $request)
     {
         $vali_data =$request->validated();
-       
+        $plan      =$request->plan ?? 1;
 
-        $loan_application =LoanApplication::store($vali_data);
+        $loan_application =LoanApplication::store($vali_data,$plan);
 
-        // foreach ($vali_data['guarantors'] as $key => $value) {
-        //     $guarantor =LoanGuarantor::create([
-        //         'member_id'           =>$value,
-        //         'loan_application_id' =>$loan_application->id,
-        //         'uuid'                =>(string)Str::orderedUuid()
-        //     ]);
-        // }
+        foreach ($vali_data['guarantors'] as $key => $value) {
+            $guarantor =LoanGuarantor::create([
+                'member_id'           =>$value,
+                'loan_application_id' =>$loan_application->id,
+                'uuid'                =>(string)Str::orderedUuid()
+            ]);
+        }
+
+        // if member refered
+        if (Auth::user()->member?->member_type == 2) {
+            $guarantor =LoanGuarantor::create([
+                'member_id'           =>Auth::user()->member?->member_refered?->refer_member_id,
+                'loan_application_id' =>$loan_application->id,
+                'uuid'                =>(string)Str::orderedUuid()
+            ]);
+        }
+    
 
         return response()->json([
             'success' =>true,
@@ -109,5 +124,21 @@ class LoanApplicationController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function loanRequest(Request $request){
+        $action =$request->action;
+        $uuid =$request->uuid;
+
+        $loan =LoanGuarantor::where('uuid',$uuid)->update([
+            'status'        =>($action == "approve") ? "Approved" : "Rejected",
+            'attended_date' =>Carbon::now(),
+            'comment'       =>$request->comment ?? null,
+        ]);
+
+        return response()->json([
+            'success' =>true,
+            'message' =>"Action Done Successfully"
+        ],200);
     }
 }

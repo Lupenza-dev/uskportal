@@ -32,6 +32,7 @@ class MemberStoreRequest extends FormRequest
             'dob'          =>['required'],
             'id_type_id'   =>['required'],
             'id_number'    =>['required'],
+            'member_type'  =>['required'],
         ];
     }
 }

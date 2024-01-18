@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Models\Loan\LoanContract;
 use App\Models\Loan\LoanApplication;
 use App\Models\Loan\Installment;
+use Carbon\Carbon;
 use Str;
 
 class LoanContractObserver
@@ -20,12 +21,13 @@ class LoanContractObserver
         $plan =$loanContract->plan;
 
         for ($i=1; $i <= $plan; $i++) { 
+            $start_date = Carbon::parse($loanContract->start_date);
             $installment =Installment::create([
                 'installment_no' =>$i,
                 'installment_amount' =>$loanContract->installment_amount,
                 'outstanding_amount' =>$loanContract->installment_amount,
                 'loan_contract_id'   =>$loanContract->id,
-                'payment_date'       =>date('Y-m-d', strtotime("+".$i."months", strtotime($loanContract->start_date))),
+                'payment_date'       =>$start_date->addMonths($i),
                 'uuid'               =>(string)Str::orderedUuid()
             ]);
         }

@@ -145,6 +145,23 @@
                         <label for="Name">Email  </label>
                         <input type="email" name="email" class="form-control" placeholder="Write Email ....." required>
                     </div>
+                    <div class="col-md-12">
+                        <label for="Name">Member Type</label>
+                        <select name="member_type" id="member_type" class="form-control" required>
+                            <option value="" selected> Choose Member Type</option>
+                            <option value="1">Original Member</option>
+                            <option value="2">Refered Member</option>
+                        </select>
+                    </div>
+                    <div class="col-md-12" id="guarantor_member_div" style="display: none">
+                        <label for="Name">Guarantor Member</label>
+                        <select name="guarantor_member" id="guarantor_member"  class="form-control">
+                            <option value="" selected> Choose Member</option>
+                            @foreach ($members as $item)
+                                <option value="{{ $item->id}}">{{ $item->member_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                     <div class="col-md-12" style="margin-top: 5px" id="alert">
                     </div>
                     <div class="col-md-12">
@@ -206,6 +223,7 @@
                         <label for="Name">Email  </label>
                         <input type="email" name="email" class="form-control" id="email" placeholder="Write Email ....." readonly>
                     </div>
+                    
                     <div class="col-md-12" style="margin-top: 5px" id="update_alert">
                     </div>
                     <div class="col-md-12">
@@ -328,6 +346,19 @@
               }
       });
   });
+  });
+
+  $('#member_type').on('change',function(){
+    var type =$(this).val();
+    if (type == 2) {
+        $('#guarantor_member_div').show();
+        $('#guarantor_member').attr('required',true);
+    } else {
+        $('#guarantor_member_div').hide();
+        $('#guarantor_member').attr('required',false );
+
+    }
+
   });
 </script>
     

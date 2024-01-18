@@ -89,7 +89,7 @@ class LoanApplication extends Model
                 $label ="<span class='badge badge-pill badge-soft-warning font-size-11'>CANCELED</span>";
                 break;
             default:
-                 $label ="<span class='badge badge-pill badge-soft-primary font-size-11'>APPLICATION</span>";
+                 $label ="<span class='badge badge-pill badge-soft-primary font-size-11'>Initiated</span>";
                 break;
         }
         return $label;

@@ -126,6 +126,14 @@
                                                     <th>Last Purchase Date</th>
                                                     <td>{{ $member->member_saving?->last_purchase_date}}</td>
                                                 </tr>
+                                                <tr>
+                                                    <th>Stock Due Days</th>
+                                                    <td>{{ $member->member_saving?->past_due_days}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Stock Penalty</th>
+                                                    <td>{{ number_format($member->member_saving?->stock_penalty)}}</td>
+                                                </tr>
                                             </tbody>
                                           </table>
                                         </div>

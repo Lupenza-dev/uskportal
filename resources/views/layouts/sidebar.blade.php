@@ -65,7 +65,7 @@
         </a>
     </li> --}}
     {{-- <li>
-        <a href="{{ url('permissions.index')}}" class="waves-effect">
+        <a href="{{ route('permissions.index')}}" class="waves-effect">
             <i class="bx bx-key"></i>
             <span key="t-file-manager">Permissions</span>
         </a>

@@ -28,7 +28,9 @@
                     <div class="card-body ">
                         <h4 class="card-title text-center" >Members</h4>
                         <div style="display: flex; flex-direction: row; justify-content:flex-end; padding: 5px 0px 5px 0px">
+                            {{-- @can('Create Member') --}}
                             <button class="btn btn-primary btn-sm waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#myModal"> <span class="fa fa-user-plus font-size-15"></span> Add Member</button>
+                            {{-- @endcan --}}
                         </div>
                         <div class="table-responsive">
                             <table id="datatable" class="table table-bordered dt-responsive  nowrap w-100">
@@ -80,6 +82,13 @@
                                              <a href="{{ route('members.show',$member->uuid)}}">
                                               <button title="Profile" class="btn btn-info btn-sm"  ><span class="fa fa-user"></span></button>
                                             </a>
+                                            {{-- <button class='btn btn-primary btn-sm perm-btn' data-bs-toggle="modal" data-bs-target="#permissionModal" 
+                                             data-uuid="{{ $member->id}}"
+                                             data-first_name="{{ $member->first_name}}"
+                                             data-middle_name="{{ $member->middle_name}}"
+                                             data-last_name="{{ $member->last_name}}
+                                             
+                                             "><i class="fa fa-key"></i></button> --}}
                                             
                                         </td>
                                     </tr>
@@ -238,6 +247,52 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+<div id="permissionModal" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Grant Permission</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+               <form id="perm_form">
+                <input type="text" name="uuid" id="member_uuid" >
+                <div class="form-group row">
+                    <div class="col-md-12">
+                        <label for="Name">First name</label>
+                        <input type="text" class="form-control" id="p_first_name" name="first_name" placeholder="Write First Name....." required>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="Name">Middle name</label>
+                        <input type="text" class="form-control" id="p_middle_name" name="middle_name" placeholder="Write Middle Name....." required>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="Name">Last name</label>
+                        <input type="text" class="form-control" id="p_last_name" name="last_name" placeholder="Write Last Name....." required>
+                    </div>
+                    <div class="col-md-12 mt-1">
+                        <label for="">Permission</label>
+                        <div>
+                            @foreach ($permissions as $permission)
+                            <input type="checkbox" id="vehicle1" name="permissions[]" value="{{ $permission->id }}">
+                            <label for="Permission"> {{ $permission->name }}</label> <br>
+                            @endforeach
+                        </div>
+                    </div> 
+                    <div class="col-md-12" style="margin-top: 5px" id="perm_alert">
+                    </div>
+                    <div class="col-md-12">
+                        <div class="mt-2 d-grid">
+                            <button class="btn btn-primary waves-effect waves-light"  id="perm_btn" type="submit"> <span class="fas fa-save"></span> Grant</button>
+                        </div>
+                    </div>
+                </div>
+               </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 
     
 @endsection
@@ -301,6 +356,12 @@
         $('#phone_number').val($(this).data('phone_number'));
         $('#email').val($(this).data('email'));
     })
+    $('.perm-btn').on('click',function(){
+        $('#member_uuid').val($(this).data('uuid'));
+        $('#p_first_name').val($(this).data('first_name'));
+        $('#p_middle_name').val($(this).data('middle_name'));
+        $('#p_last_name').val($(this).data('last_name'));
+    })
 
     $(document).ready(function(){
       $('#update_form').on('submit',function(e){ 
@@ -359,6 +420,53 @@
 
     }
 
+  });
+</script>
+<script>
+    $(document).ready(function(){
+      $('#perm_form').on('submit',function(e){ 
+          e.preventDefault();
+
+      $.ajaxSetup({
+      headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+           }
+          });
+      $.ajax({
+      type:'POST',
+      url:"{{ route('member.permission')}}",
+      data : new FormData(this),
+      contentType: false,
+      cache: false,
+      processData : false,
+      success:function(response){
+        console.log(response);
+        $('#perm_alert').html('<div class="alert alert-success">'+response.message+'</div>');
+        setTimeout(function(){
+         location.reload();
+      },500);
+      },
+      error:function(response){
+          console.log(response.responseText);
+          if (jQuery.type(response.responseJSON.errors) == "object") {
+            $('#perm_alert').html('');
+          $.each(response.responseJSON.errors,function(key,value){
+              $('#perm_alert').append('<div class="alert alert-danger">'+value+'</div>');
+          });
+          } else {
+             $('#perm_alert').html('<div class="alert alert-danger">'+response.responseJSON.errors+'</div>');
+          }
+      },
+      beforeSend : function(){
+                   $('#perm_btn').html('<i class="fa fa-spinner fa-pulse fa-spin"></i> loading..........');
+                   $('#perm_btn').attr('disabled', true);
+              },
+              complete : function(){
+                $('#perm_btn').html('<i class="fa fa-save"></i> Grant');
+                $('#perm_btn').attr('disabled', false);
+              }
+      });
+  });
   });
 </script>
     

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Member\Member;
 use App\Models\Member\IdType;
 use App\Http\Requests\MemberStoreRequest;
+use App\Models\Management\Permission;
 use App\Models\Member\MemberReference;
 use Auth;
 use Str;
@@ -14,6 +15,7 @@ use Spatie\Permission\Models\Role;
 use App\Models\User;
 use Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class MemberController extends Controller
 {
@@ -26,7 +28,8 @@ class MemberController extends Controller
     {
         $members =Member::orderBy('first_name','ASC')->get();
         $id_types =IdType::get();
-        return view('members.list',compact('members','id_types'));
+        $permissions =Permission::get();
+        return view('members.list',compact('members','id_types','permissions'));
     }
 
     /**
@@ -159,5 +162,20 @@ class MemberController extends Controller
             'message' =>'Member Updated successfullly',
         ],200);
         
+    }
+
+    public function memberPermission(Request $request){
+        $member_id =$request->uuid;
+        $permissions =$request->permissions;
+        Log::info($permissions);
+        $user =User::where('member_id',$member_id)->first();
+        //$user->syncPermissions($permissions);
+        Auth::user()->givePermissionTo('Create Member');
+        return response()->json([
+            'success' =>true,
+            'message' =>'Action Done successfullly',
+        ],200);
+
+
     }
 }

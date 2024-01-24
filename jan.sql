@@ -3,5 +3,9 @@ CREATE TABLE `usk`.`member_references` (`id` INT NOT NULL AUTO_INCREMENT , `memb
 ALTER TABLE `member_references` CHANGE `refere_member_id` `refer_member_id` INT(11) NOT NULL;
 ALTER TABLE `loan_contracts` ADD `disbursment_date` DATE NULL DEFAULT NULL AFTER `start_date`;
 ALTER TABLE `loan_guarantors` ADD `comment` TEXT NULL DEFAULT NULL AFTER `status`;
+ALTER TABLE `member_saving_summaries` ADD `past_due_days` INT NOT NULL DEFAULT '0' AFTER `fees`;
+ALTER TABLE `member_saving_summaries` ADD `stock_for_month` VARCHAR(255) NULL DEFAULT NULL AFTER `last_purchase_date`;
+ALTER TABLE `member_saving_summaries` ADD `stock_penalty` FLOAT NOT NULL DEFAULT '0' AFTER `past_due_days`;
+
 
 

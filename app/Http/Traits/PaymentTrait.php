@@ -163,15 +163,17 @@ trait PaymentTrait {
             $stock =$member_saving->stock;
             $member_saving->stock = $stock + $payment->amount;
             $member_saving->last_stock_amount =$stock;
-            $member_saving->last_purchase_date =Carbon::now();
+            $member_saving->last_purchase_date =$payment->payment_date;
+            $member_saving->stock_for_month  =$payment->payment_for_month;
             $member_saving->save();
         }else{
             $member_saving =MemberSavingSummary::create([
                 'member_id'          =>$payment->member_id,
                 'stock'              =>$payment->amount,
                 'last_stock_amount'  =>$payment->amount,
-                'last_purchase_date' =>Carbon::now(),
+                'last_purchase_date' =>$payment->payment_date,
                 'uuid'               =>(string)Str::orderedUuid(),
+                'member_saving->stock_for_month'  =>$payment->payment_for_month
             ]); 
         }
 

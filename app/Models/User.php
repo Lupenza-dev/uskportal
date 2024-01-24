@@ -53,4 +53,6 @@ class User extends Authenticatable
     public function member(){
         return $this->hasOne(Member::class,'id','member_id');
     }
+
+    
 }

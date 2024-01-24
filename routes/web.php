@@ -3,11 +3,14 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Dashboard\AdminController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Member\MemberController;
 use App\Http\Controllers\Loan\LoanApplicationController;
 use App\Http\Controllers\Loan\LoanController;
+use App\Http\Controllers\Management\PermissionController;
 use App\Http\Controllers\Payment\PaymentController;
 use App\Models\Loan\LoanApplication;
+use App\Models\Member\MemberReference;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +39,8 @@ Route::group(['middleware'=>"auth"],function(){
     Route::post('approve-payment',[PaymentController::class,'approvePayment'])->name('approve.payment');
     Route::get('loan-guarantor',[LoanApplicationController::class,'loanGuarantor'])->name('loan.guarantors');
     Route::post('loan-request',[LoanApplicationController::class,'loanRequest'])->name('loan.request');
+    Route::post('member-permission',[MemberController::class,'memberPermission'])->name('member.permission');
+    Route::get('due-days',[HomeController::class,'calculatePastDueOnStock']);
 
     Route::resources([
         'users'          =>UserController::class,

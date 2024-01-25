@@ -29,7 +29,9 @@
                         <h4 class="card-title text-center" >Members</h4>
                         <div style="display: flex; flex-direction: row; justify-content:flex-end; padding: 5px 0px 5px 0px">
                             {{-- @can('Create Member') --}}
+                            @if (Auth::user()->id == 1)
                             <button class="btn btn-primary btn-sm waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#myModal"> <span class="fa fa-user-plus font-size-15"></span> Add Member</button>
+                            @endif
                             {{-- @endcan --}}
                         </div>
                         <div class="table-responsive">

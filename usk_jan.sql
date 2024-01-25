@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Dec 21, 2023 at 06:07 AM
+-- Generation Time: Jan 25, 2024 at 12:42 PM
 -- Server version: 5.7.39
 -- PHP Version: 8.2.0
 
@@ -36,6 +36,23 @@ CREATE TABLE `failed_jobs` (
   `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fee_past_dues`
+--
+
+CREATE TABLE `fee_past_dues` (
+  `id` int(11) NOT NULL,
+  `member_id` int(11) NOT NULL,
+  `fee_for_month` varchar(100) NOT NULL,
+  `past_due_days` int(11) NOT NULL DEFAULT '0',
+  `penalty` float NOT NULL,
+  `uuid` varchar(100) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -133,6 +150,7 @@ CREATE TABLE `loan_contracts` (
   `outstanding_amount` float NOT NULL,
   `contract_code` varchar(20) NOT NULL,
   `start_date` date DEFAULT NULL,
+  `disbursment_date` date DEFAULT NULL,
   `expected_end_date` date DEFAULT NULL,
   `past_due_days` int(11) DEFAULT NULL,
   `past_due_amount` float DEFAULT NULL,
@@ -158,6 +176,7 @@ CREATE TABLE `loan_guarantors` (
   `member_id` int(11) NOT NULL,
   `loan_application_id` int(11) NOT NULL,
   `status` varchar(10) NOT NULL DEFAULT 'Pending',
+  `comment` text,
   `uuid` varchar(100) NOT NULL,
   `attended_date` date DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -202,6 +221,7 @@ CREATE TABLE `members` (
   `email` varchar(100) NOT NULL,
   `id_type_id` int(11) NOT NULL,
   `id_number` varchar(50) NOT NULL,
+  `member_type` int(11) DEFAULT NULL,
   `status` varchar(10) NOT NULL DEFAULT 'Active',
   `uuid` varchar(100) NOT NULL,
   `created_by` int(11) NOT NULL,
@@ -213,8 +233,23 @@ CREATE TABLE `members` (
 -- Dumping data for table `members`
 --
 
-INSERT INTO `members` (`id`, `first_name`, `middle_name`, `last_name`, `phone_number`, `dob`, `member_reg_id`, `email`, `id_type_id`, `id_number`, `status`, `uuid`, `created_by`, `created_at`, `updated_at`) VALUES
-(1, 'Luhangano', 'Erasto', 'Lupenza', '255683130185', '1993-10-06', 'Usk0123', 'lupenza10@gmail.com', 1, '19931006111040000129', 'Active', '9ae64647-aa98-47de-b3a3-64024fffd158', 1, '2023-12-21 05:55:39', '2023-12-21 05:55:39');
+INSERT INTO `members` (`id`, `first_name`, `middle_name`, `last_name`, `phone_number`, `dob`, `member_reg_id`, `email`, `id_type_id`, `id_number`, `member_type`, `status`, `uuid`, `created_by`, `created_at`, `updated_at`) VALUES
+(1, 'Luhangano', 'Erasto', 'Lupenza', '255683130185', '1993-10-06', 'Usk0123', 'lupenza10@gmail.com', 1, '19931006111040000129', NULL, 'Active', '9ae64647-aa98-47de-b3a3-64024fffd158', 1, '2023-12-21 05:55:39', '2023-12-21 05:55:39');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `member_references`
+--
+
+CREATE TABLE `member_references` (
+  `id` int(11) NOT NULL,
+  `member_id` int(11) NOT NULL,
+  `refer_member_id` int(11) NOT NULL,
+  `uuid` varchar(100) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -230,10 +265,18 @@ CREATE TABLE `member_saving_summaries` (
   `holded_stock` float NOT NULL DEFAULT '0',
   `last_stock_amount` float NOT NULL DEFAULT '0',
   `last_purchase_date` datetime DEFAULT NULL,
+  `stock_for_month` varchar(255) DEFAULT NULL,
+  `fee_for_month` varchar(100) DEFAULT NULL,
   `fees` float DEFAULT NULL,
+  `past_due_days` int(11) NOT NULL DEFAULT '0',
+  `stock_penalty` float NOT NULL DEFAULT '0',
+  `fee_past_due_days` int(11) NOT NULL DEFAULT '0',
+  `fee_penalty` float DEFAULT '0',
   `uuid` varchar(100) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `last_fee_purchase_date` date DEFAULT NULL,
+  `last_fee_amount` float NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -476,9 +519,7 @@ CREATE TABLE `payouts` (
 CREATE TABLE `permissions` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `permission_category_id` int(11) DEFAULT NULL,
-  `description` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `uuid` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `guard_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -488,9 +529,9 @@ CREATE TABLE `permissions` (
 -- Dumping data for table `permissions`
 --
 
-INSERT INTO `permissions` (`id`, `name`, `permission_category_id`, `description`, `uuid`, `guard_name`, `created_at`, `updated_at`) VALUES
-(1, 'Create Permission', 1, 'create system permission', '98881b42-565f-40e1-9f09-8ea3f613cbe7', 'web', '2023-02-22 19:03:23', '2023-02-22 19:03:23'),
-(2, 'Create Payment', 1, 'create payment that not reflect', '9888249b-9fa0-4715-bd76-a1e156c09476', 'web', '2023-02-22 19:29:31', '2023-02-22 19:29:31');
+INSERT INTO `permissions` (`id`, `name`, `description`, `guard_name`, `created_at`, `updated_at`) VALUES
+(1, 'Create Member', 'Ability to create member', 'Web', '2024-01-23 04:18:35', '2024-01-23 04:18:35'),
+(2, 'Approve Payment', 'Ability to approve payment', 'Web', '2024-01-23 04:18:55', '2024-01-23 04:18:55');
 
 -- --------------------------------------------------------
 
@@ -572,6 +613,23 @@ CREATE TABLE `role_has_permissions` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `stock_past_due`
+--
+
+CREATE TABLE `stock_past_due` (
+  `id` int(11) NOT NULL,
+  `member_id` int(11) NOT NULL,
+  `stock_for_month` varchar(100) NOT NULL,
+  `past_due_days` int(11) NOT NULL DEFAULT '0',
+  `penalty` float NOT NULL,
+  `uuid` varchar(100) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -609,6 +667,12 @@ INSERT INTO `users` (`id`, `name`, `email`, `phone_number`, `email_verified_at`,
 ALTER TABLE `failed_jobs`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`);
+
+--
+-- Indexes for table `fee_past_dues`
+--
+ALTER TABLE `fee_past_dues`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `id_types`
@@ -650,6 +714,12 @@ ALTER TABLE `loan_types`
 -- Indexes for table `members`
 --
 ALTER TABLE `members`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `member_references`
+--
+ALTER TABLE `member_references`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -772,6 +842,12 @@ ALTER TABLE `role_has_permissions`
   ADD KEY `role_has_permissions_role_id_foreign` (`role_id`);
 
 --
+-- Indexes for table `stock_past_due`
+--
+ALTER TABLE `stock_past_due`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -787,6 +863,12 @@ ALTER TABLE `users`
 --
 ALTER TABLE `failed_jobs`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `fee_past_dues`
+--
+ALTER TABLE `fee_past_dues`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `id_types`
@@ -828,7 +910,13 @@ ALTER TABLE `loan_types`
 -- AUTO_INCREMENT for table `members`
 --
 ALTER TABLE `members`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `member_references`
+--
+ALTER TABLE `member_references`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `member_saving_summaries`
@@ -897,10 +985,16 @@ ALTER TABLE `roles`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT for table `stock_past_due`
+--
+ALTER TABLE `stock_past_due`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

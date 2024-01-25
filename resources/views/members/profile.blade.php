@@ -111,28 +111,46 @@
                                           <table class="table table-bordered dt-responsive ">
                                             <tbody>
                                                 <tr>
-                                                    <th>Total Fee's</th>
-                                                    <td>{{ number_format( $member->member_saving?->fees)}}</td>
+                                                    <td class="text-center" colspan="4"><h5>Stock Summary</h5></td>
                                                 </tr>
                                                 <tr>
                                                     <th>Total Stock</th>
                                                     <td>{{ number_format($member->member_saving?->stock)}}</td>
-                                                </tr>
-                                                <tr>
                                                     <th>Last Purchase Stock</th>
                                                     <td>{{ number_format($member->member_saving?->last_stock_amount)}}</td>
                                                 </tr>
                                                 <tr>
                                                     <th>Last Purchase Date</th>
                                                     <td>{{ $member->member_saving?->last_purchase_date}}</td>
-                                                </tr>
-                                                <tr>
                                                     <th>Stock Due Days</th>
                                                     <td>{{ $member->member_saving?->past_due_days}}</td>
                                                 </tr>
                                                 <tr>
                                                     <th>Stock Penalty</th>
                                                     <td>{{ number_format($member->member_saving?->stock_penalty)}}</td>
+                                                    <th>Stock for Month</th>
+                                                    <td>{{ $member->member_saving?->stock_for_month}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-center" colspan="4"><h5>Fee Summary</h5></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Total Fee</th>
+                                                    <td>{{ number_format($member->member_saving?->fees)}}</td>
+                                                    <th>Last Fee Paid</th>
+                                                    <td>{{ number_format($member->member_saving?->last_fee_amount)}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Last Fee Paid Date</th>
+                                                    <td>{{ $member->member_saving?->last_fee_purchase_date}}</td>
+                                                    <th>Fee Due Days</th>
+                                                    <td>{{ $member->member_saving?->fee_past_due_days}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Fee Penalty</th>
+                                                    <td>{{ number_format($member->member_saving?->fee_penalty)}}</td>
+                                                    <th>Fee for Month</th>
+                                                    <td>{{ $member->member_saving?->fee_for_month}}</td>
                                                 </tr>
                                             </tbody>
                                           </table>

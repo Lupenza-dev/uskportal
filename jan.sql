@@ -9,4 +9,6 @@ ALTER TABLE `member_saving_summaries` ADD `stock_penalty` FLOAT NOT NULL DEFAULT
 ALTER TABLE `member_saving_summaries` ADD `fee_for_month` VARCHAR(100) NULL DEFAULT NULL AFTER `stock_for_month`;
 ALTER TABLE `member_saving_summaries` ADD `fee_past_due_days` INT NOT NULL DEFAULT '0' AFTER `stock_penalty`, ADD `fee_penalty` FLOAT NULL DEFAULT '0' AFTER `fee_past_due_days`;
 ALTER TABLE `member_saving_summaries` ADD `last_fee_purchase_date` DATE NULL DEFAULT NULL ;
+ALTER TABLE `member_saving_summaries` ADD `last_fee_amount` FLOAT NOT NULL DEFAULT '0' AFTER `last_fee_purchase_date`;
+
 

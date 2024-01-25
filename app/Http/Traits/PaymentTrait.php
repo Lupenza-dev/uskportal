@@ -173,7 +173,7 @@ trait PaymentTrait {
                 'last_stock_amount'  =>$payment->amount,
                 'last_purchase_date' =>$payment->payment_date,
                 'uuid'               =>(string)Str::orderedUuid(),
-                'member_saving->stock_for_month'  =>$payment->payment_for_month
+                'stock_for_month'  =>$payment->payment_for_month
             ]); 
         }
 
@@ -186,12 +186,18 @@ trait PaymentTrait {
         if ($member_saving) {
             $fees =$member_saving->fees;
             $member_saving->fees = $fees + $payment->amount;
+            $member_saving->last_fee_purchase_date =$payment->payment_date;
+            $member_saving->fee_for_month  =$payment->payment_for_month;
             $member_saving->save();
         }else{
             $member_saving =MemberSavingSummary::create([
                 'member_id'          =>$payment->member_id,
-                'fees'              =>$payment->amount,
+                'fees'               =>$payment->amount,
+                'last_fee_amount'    =>$payment->amount,
+                'last_fee_purchase_date' =>$payment->payment_date,
                 'uuid'               =>(string)Str::orderedUuid(),
+                'fee_for_month'  =>$payment->payment_for_month
+                  
             ]); 
         }
 

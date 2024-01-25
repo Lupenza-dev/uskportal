@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Member\FeePastDue;
 use App\Models\Member\Member;
 use App\Models\Member\MemberSavingSummary;
 use App\Models\Member\StockPastDue;
@@ -53,6 +54,43 @@ class HomeController extends Controller
                         $stock =StockPastDue::updateOrCreate([
                             'member_id' =>$member->id,
                             'stock_for_month' =>$nextMonthAfterPurchase->endOfMonth()->format('F Y'),
+                        ],[
+                            'past_due_days' =>$pastDueDays,
+                            'penalty'       =>$pastDueDays * 1500,
+                            'uuid'          =>Str::orderedUuid(),
+                        ]);
+                        
+                      
+                    }
+                }
+            }
+            return true;
+           
+        }
+    }
+
+    public function calculatePastDueOnFee(){
+        $members =MemberSavingSummary::where('fee_for_month','!=',date('M Y'))->get();
+        if ($members) {
+
+            foreach ($members as $member) {
+                 // If no stock purchase found, calculate past due days
+                $currentDate = Carbon::now();
+                $lastPurchaseDate = Carbon::parse($member->fee_for_month)->endOfMonth();
+        
+                if ($currentDate->greaterThan($lastPurchaseDate)) {
+                    // Check if the next month after the purchase date has passed
+                    $nextMonthAfterPurchase = $lastPurchaseDate->copy()->addMonth();
+                    if ($currentDate->greaterThanOrEqualTo($nextMonthAfterPurchase->endOfMonth())) {
+                        // Calculate past due days
+                        $pastDueDays = $currentDate->diffInDays($nextMonthAfterPurchase->endOfMonth());
+                        $member->fee_past_due_days =$pastDueDays;
+                        $member->fee_penalty =$pastDueDays * 1500;
+                        $member->save();
+                        
+                        $stock =FeePastDue::updateOrCreate([
+                            'member_id' =>$member->id,
+                            'fee_for_month' =>$nextMonthAfterPurchase->endOfMonth()->format('F Y'),
                         ],[
                             'past_due_days' =>$pastDueDays,
                             'penalty'       =>$pastDueDays * 1500,

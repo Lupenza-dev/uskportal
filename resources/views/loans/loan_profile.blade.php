@@ -70,6 +70,15 @@
                                     <th>ID Number</th>
                                     <td>{{ $loan->member?->id_number}}</td>
                                 </tr>
+                                <tr class="text-center">
+                                    <td colspan="2"><b>Guarantors</b></td>
+                                </tr>
+                                @foreach ($loan->guarantors as $guarantor)
+                                <tr>
+                                    <th>Guarantor {{ $loop->iteration }} </th>
+                                    <td>{{ $guarantor->member?->member_name }}</td>
+                                </tr> 
+                                @endforeach
                                </tbody>
                             </table>
                         </div>

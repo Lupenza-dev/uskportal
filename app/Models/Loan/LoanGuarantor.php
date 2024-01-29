@@ -2,6 +2,7 @@
 
 namespace App\Models\Loan;
 
+use App\Models\Member\Member;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -28,6 +29,10 @@ class LoanGuarantor extends Model
                 break;
         }
         return $label;
+    }
+
+    public function member(){
+        return $this->belongsTo(Member::class,'member_id');
     }
     
 }

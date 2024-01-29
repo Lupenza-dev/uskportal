@@ -85,7 +85,7 @@ class LoanController extends Controller
      */
     public function show($uuid)
     {
-        $loan =LoanContract::where('uuid',$uuid)->first();
+        $loan =LoanContract::with('guarantors','member','installments','payments','loan_type','member.id_type')->where('uuid',$uuid)->first();
         return view('loans.loan_profile',compact('loan'));
     }
 

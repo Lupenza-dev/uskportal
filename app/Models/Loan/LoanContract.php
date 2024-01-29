@@ -20,6 +20,10 @@ class LoanContract extends Model
         return $this->belongsTo(Member::class);
     }
 
+    public function guarantors(){
+        return $this->hasMany(LoanGuarantor::class,'loan_application_id','loan_application_id');
+    }
+
     public function loan_type(){
         return $this->hasOne(LoanType::class,'id','loan_type_id');
     }

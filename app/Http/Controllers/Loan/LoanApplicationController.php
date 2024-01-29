@@ -29,7 +29,12 @@ class LoanApplicationController extends Controller
     }
 
     public function loanGuarantor(){
-        $requests =LoanGuarantor::with('loan','loan.member')->where('member_id',Auth::user()->member_id)->get();
+        $requests =LoanGuarantor::with('loan','loan.member')
+                    ->whereHas('loan',function($query){
+                        $query->where('level','!=','CANCELED');
+                    })
+                // ->where('member_id',Auth::user()->member_id)
+                    ->get();
         return view('loans.loan_request',compact('requests'));
     }
 

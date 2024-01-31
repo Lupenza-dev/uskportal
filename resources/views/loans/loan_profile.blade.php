@@ -30,13 +30,16 @@
                             <div></div>
                             <h4 class="card-title text-center" >Loan Contract Profile</h4>
                             <div class="btn-group">
+                                @if (Auth::user()->member_id == $loan->member?->id)
                                 <button type="button" class="btn btn-info">Actions</button>
                                 <button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="mdi mdi-chevron-down"></i>
                                 </button>
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#myModal1"> <i class="fa fa-plus"></i> Add Repayment</a>
-                                </div>
+                                </div>     
+                                @endif
+                                
                             </div>
                         </div>
                         

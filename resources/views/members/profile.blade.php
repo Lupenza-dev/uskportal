@@ -35,13 +35,16 @@
                             <div></div>
                             <h4 class="card-title text-center" >Member Profile</h4>
                             <div class="btn-group">
+                                @if (Auth::user()->member_id == $member->id)
                                 <button type="button" class="btn btn-info">Actions</button>
                                 <button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="mdi mdi-chevron-down"></i>
                                 </button>
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#myModal1"> <i class="fa fa-plus"></i> Add Payment</a>
-                                </div>
+                                </div>   
+                                @endif
+                               
                             </div>
                         </div>
                         
@@ -106,7 +109,7 @@
                               <div class="tab-content" id="myTabContent">
                                 <div class="tab-pane fade show active" id="payment-tab-pane" role="tabpanel" aria-labelledby="payment-tab" tabindex="0">
                                     <div class="col-md-12" style="padding: 10px 2px 10px 2px">
-                                        <h4 class="card-title text-center">Member Summary</h4>
+                                        {{-- <h4 class="card-title text-center">Member Summary</h4> --}}
                                         <div class="table-responsive">
                                           <table class="table table-bordered dt-responsive ">
                                             <tbody>

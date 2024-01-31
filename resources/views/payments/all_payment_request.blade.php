@@ -40,7 +40,9 @@
                                         <th>Payment Type</th>
                                         <th>Payment For Month</th>
                                         <th>Status</th>
+                                        @if (in_array(Auth::user()->id,[1,4,8]))
                                         <th>Action</th>
+                                        @endif
                                       </tr>
                                 </thead>
                                 <tbody>
@@ -55,9 +57,12 @@
                                         <td>{{ $payment->payment_type }}</td> 
                                         <td>{{ $payment->payment_for_month }}</td> 
                                         <td>{!! $payment->status_format !!}</td>
+                                        @if (in_array(Auth::user()->id,[1,4,8]))
                                         <td>
                                             <button class="btn btn-primary btn-sm" id="{{ $payment->id}}" onclick="approvePayment(id)" title="Approve"><i class="fa fa-check"></i></button>
-                                        </td>
+                                        </td>   
+                                        @endif
+                                       
                                     </tr>
                                     @endforeach
                                  </tbody> 

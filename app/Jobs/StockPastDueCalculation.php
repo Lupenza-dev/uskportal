@@ -43,7 +43,7 @@ class StockPastDueCalculation implements ShouldQueue
             foreach ($members as $member) {
                  // If no stock purchase found, calculate past due days
                 $currentDate = Carbon::now();
-                $lastPurchaseDate = Carbon::parse($member->stock_for_month)->endOfMonth();
+                $lastPurchaseDate = Carbon::parse($member->stock_for_month ?? "2023-12-01")->endOfMonth();
         
                 if ($currentDate->greaterThan($lastPurchaseDate)) {
                     // Check if the next month after the purchase date has passed
@@ -70,42 +70,6 @@ class StockPastDueCalculation implements ShouldQueue
             }
            
            
-        }else{
-            $members =Member::doesntHave('member_saving')->get();
-            foreach ($members as $member) {
-                $currentDate = Carbon::now();
-                //$lastPurchaseDate = Carbon::parse('2024-01-01');
-                $lastPurchaseDate = Carbon::parse('2024-01-01')->endOfMonth();
-
-                if ($currentDate->greaterThanOrEqualTo($lastPurchaseDate)) {
-                    // Calculate past due days
-                    $pastDueDays = $currentDate->diffInDays($lastPurchaseDate);
-
-                    $member_saving =MemberSavingSummary::updateOrcreate([
-                        'member_id'          =>$member->id,
-                    ],[
-                        'stock'              =>0,
-                        'last_stock_amount'  =>0,
-                        'uuid'               =>(string)Str::orderedUuid(),
-                        'stock_for_month'    =>Null,
-                        'past_due_days'      =>$pastDueDays,
-                        'stock_penalty'      =>$pastDueDays * 1500,
-                    ]); 
-
-                    $stock =StockPastDue::updateOrCreate([
-                        'member_id' =>$member->id,
-                        'stock_for_month' =>$lastPurchaseDate->endOfMonth()->format('F Y'),
-                    ],[
-                        'past_due_days' =>$pastDueDays,
-                        'penalty'       =>$pastDueDays * 1500,
-                        'uuid'          =>Str::orderedUuid(),
-                    ]);
-                    
-                  
-                }
-
-
-            }
         }
 
         return true;

@@ -13,4 +13,8 @@ class MemberSavingSummary extends Model
     'last_stock_amount','last_purchase_date','fees','uuid','fee_for_month',
     'last_fee_amount','last_fee_purchase_date','stock_for_month','past_due_days','stock_penalty'];
 
+    public function member(){
+        return $this->belongsTo(Member::class,'member_id');
+    }
+
 }

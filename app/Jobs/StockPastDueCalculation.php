@@ -37,7 +37,7 @@ class StockPastDueCalculation implements ShouldQueue
 
     public function handle(){
         Log::info('StockPastDueCalculation');
-        $members =MemberSavingSummary::where('stock_for_month','!=',date('F Y'))->get();
+        $members =MemberSavingSummary::where('stock_for_month','!=',date('F Y'))->orWhere('stock',0)->get();
         if ($members->count() > 0) {
 
             foreach ($members as $member) {

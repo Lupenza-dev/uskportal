@@ -38,9 +38,7 @@ class FeePastDueCalculation implements ShouldQueue
         Log::info('FeePastDueCalculation');
         $members =MemberSavingSummary::with('member')
         ->where('fee_for_month','!=',date('F Y'))
-       // ->orWhere('fees',null)
-       // ->where('member_id',13)
-      //  ->orWhere('fee_for_month',null)
+        ->orWhere('fees',null)
         ->get();
        // $members =MemberSavingSummary::where('stock',0)->get();
         if ($members->count() > 0) {

@@ -100,8 +100,15 @@
                                   <button class="nav-link active rounded-5" id="payment-tab" data-bs-toggle="tab" data-bs-target="#payment-tab-pane" type="button" role="tab" aria-selected="true"> <span class="nav-text">Member Summary</span> </button>
                                 </li>
                                 <li class="nav-item" role="presentation">
+                                    <button class="nav-link rounded-5" id="stock-past-tab" data-bs-toggle="tab" type="button" data-bs-target="#stock-past-tab-pane" role="tab" aria-selected="false"> <span class="nav-text">Stock Past Due</span> </button>
+                                  </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link rounded-5" id="fee-past-tab" data-bs-toggle="tab" type="button" data-bs-target="#fee-past-tab-pane" role="tab" aria-selected="false"> <span class="nav-text">Fee Past Due</span> </button>
+                                  </li>
+                                <li class="nav-item" role="presentation">
                                   <button class="nav-link rounded-5" id="repayment-tab" data-bs-toggle="tab" type="button" data-bs-target="#repayment-tab-pane" role="tab" aria-selected="false"> <span class="nav-text">Payments (Stock)</span> </button>
                                 </li>
+                                
                                 <li class="nav-item" role="presentation">
                                   <button class="nav-link rounded-5" id="attachment-tab" data-bs-toggle="tab" data-bs-target="#attachment-tab-pane"  type="button" role="tab" aria-selected="false"><span class="nav-text">Payments (Fees)</span></button>
                                 </li>
@@ -157,6 +164,70 @@
                                                 </tr>
                                             </tbody>
                                           </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="stock-past-tab-pane" role="tabpanel" aria-labelledby="stock-past-tab" tabindex="0">
+                                    <div class="col-md-12" style="padding: 10px 2px 10px 2px">
+                                        <h4 class="card-title text-center">Stock Past Due</h4>
+                                        <div class="table-responsive">
+                                            <table id="datatable2" class="table table-bordered dt-responsive  nowrap w-100">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No</th>
+                                                        <th>Stock For Month</th>
+                                                        <th>Days</th>
+                                                        <th>Penalty</th>
+                                                        <th>Penalty Paid</th>
+                                                        <th>Paid Status</th>
+                                                      </tr>
+                                                </thead>
+                                                 <tbody>
+                                                @foreach ($member->stock_dues as $stock)
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $stock->stock_for_month}}</td>
+                                                    <td>{{ $stock->past_due_days }}</td> 
+                                                    <td>{{ number_format($stock->penalty) }}</td> 
+                                                    <td>{{ number_format($stock->penalty_paid) }}</td> 
+                                                    <td>{!! $stock->paid_status_format !!}</td> 
+                                                </tr>
+                                                @endforeach
+                                             </tbody> 
+                                               
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="fee-past-tab-pane" role="tabpanel" aria-labelledby="fee-past-tab" tabindex="0">
+                                    <div class="col-md-12" style="padding: 10px 2px 10px 2px">
+                                        <h4 class="card-title text-center">Fee's Past Due</h4>
+                                        <div class="table-responsive">
+                                            <table id="datatable3" class="table table-bordered dt-responsive  nowrap w-100">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No</th>
+                                                        <th>Fee For Month</th>
+                                                        <th>Days</th>
+                                                        <th>Penalty</th>
+                                                        <th>Penalty Paid</th>
+                                                        <th>Paid Status</th>
+                                                      </tr>
+                                                </thead>
+                                                 <tbody>
+                                                @foreach ($member->fee_dues as $fee)
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $fee->fee_for_month}}</td>
+                                                    <td>{{ $fee->past_due_days }}</td> 
+                                                    <td>{{ number_format($fee->penalty) }}</td> 
+                                                    <td>{{ number_format($fee->penalty_paid) }}</td> 
+                                                    <td>{!! $fee->paid_status_format !!}</td> 
+                                                </tr>
+                                                @endforeach
+                                             </tbody> 
+                                               
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
@@ -294,6 +365,8 @@
 <script>
     $(document).ready(function(){
         $('#datatable1').DataTable();
+        $('#datatable2').DataTable();
+        $('#datatable3').DataTable();
   });
 </script>
 <script>

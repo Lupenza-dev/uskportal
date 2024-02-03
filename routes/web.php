@@ -40,7 +40,7 @@ Route::group(['middleware'=>"auth"],function(){
     Route::get('loan-guarantor',[LoanApplicationController::class,'loanGuarantor'])->name('loan.guarantors');
     Route::post('loan-request',[LoanApplicationController::class,'loanRequest'])->name('loan.request');
     Route::post('member-permission',[MemberController::class,'memberPermission'])->name('member.permission');
-    Route::get('due-days',[HomeController::class,'calculatePastDueOnFee']);
+    Route::get('due-days',[HomeController::class,'testJobs']);
 
     Route::resources([
         'users'          =>UserController::class,

@@ -96,7 +96,7 @@ class MemberController extends Controller
      */
     public function show($uuid)
     {
-        $member =Member::where('uuid',$uuid)->first();
+        $member =Member::with('member_saving','stock_dues','fee_dues','stock_payments','fee_payments')->where('uuid',$uuid)->first();
         return view('members.profile',compact('member'));
     }
 

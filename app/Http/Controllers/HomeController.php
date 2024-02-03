@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\FeePastDueCalculation;
+use App\Jobs\StockPastDueCalculation;
 use App\Models\Member\FeePastDue;
 use App\Models\Member\Member;
 use App\Models\Member\MemberSavingSummary;
@@ -32,6 +34,12 @@ class HomeController extends Controller
         return view('home');
     }
 
+    public function testJobs(){
+        StockPastDueCalculation::dispatch();
+        FeePastDueCalculation::dispatch();
+        return true;
+    }
+
     public function calculatePastDueOnStock(){
        
         $members =MemberSavingSummary::where('stock_for_month','!=',date('F Y'))->get();
@@ -53,7 +61,7 @@ class HomeController extends Controller
                         $member->save();
                         
                         $stock =StockPastDue::updateOrCreate([
-                            'member_id' =>$member->id,
+                            'member_id' =>$member->member_id,
                             'stock_for_month' =>$nextMonthAfterPurchase->endOfMonth()->format('F Y'),
                         ],[
                             'past_due_days' =>$pastDueDays,
@@ -75,7 +83,7 @@ class HomeController extends Controller
     public function calculatePastDueOnFee(){
         $members =MemberSavingSummary::with('member')
         ->where('fee_for_month','!=',date('F Y'))
-       // ->orWhere('fees',null)
+        ->orWhere('fees',null)
        // ->where('member_id',13)
       //  ->orWhere('fee_for_month',null)
         ->get();
@@ -99,7 +107,7 @@ class HomeController extends Controller
                         $member->save();
                         
                         $stock =FeePastDue::updateOrCreate([
-                            'member_id' =>$member->id,
+                            'member_id' =>$member->member_id,
                             'fee_for_month' =>$nextMonthAfterPurchase->endOfMonth()->format('F Y'),
                         ],[
                             'past_due_days' =>$pastDueDays,

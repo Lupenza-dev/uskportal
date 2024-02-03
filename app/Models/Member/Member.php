@@ -51,6 +51,7 @@ class Member extends Model
         return $this->belongsTo(IdType::class);
     }
 
+
     public function getMemberTypesAttribute(){
         switch ($this->member_type) {
             case 1:
@@ -74,5 +75,12 @@ class Member extends Model
         return $this->hasOne(MemberReference::class,'member_id');
     }
 
+    public function stock_dues(){
+        return $this->hasMany(StockPastDue::class,'member_id');
+    }
+
+    public function fee_dues(){
+        return $this->hasMany(FeePastDue::class,'member_id');
+    }
 
 }

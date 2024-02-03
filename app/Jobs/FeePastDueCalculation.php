@@ -60,7 +60,7 @@ class FeePastDueCalculation implements ShouldQueue
                         $member->save();
                         
                         $stock =FeePastDue::updateOrCreate([
-                            'member_id' =>$member->id,
+                            'member_id' =>$member->member_id,
                             'fee_for_month' =>$nextMonthAfterPurchase->endOfMonth()->format('F Y'),
                         ],[
                             'past_due_days' =>$pastDueDays,

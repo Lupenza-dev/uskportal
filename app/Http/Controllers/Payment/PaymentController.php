@@ -12,8 +12,10 @@ use App\Models\Payment\Payout;
 use Illuminate\Http\Request;
 use Str;
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class PaymentController extends Controller
 {
@@ -108,10 +110,14 @@ class PaymentController extends Controller
     }
 
     public function paymentRequest(Request $request){
-        $valid =$this->validate($request,[
-            'amount'            =>'required',
-            'payment_reference' =>'required','unique:payment_requests,payment_reference','unique:payments,payment_reference',
-            'payment_date'      =>'required',
+        $valid = $this->validate($request, [
+            'amount' => 'required',
+            'payment_reference' => [
+                'required',
+                Rule::unique('payment_requests', 'payment_reference'),
+                Rule::unique('payments', 'payment_reference')
+            ],
+            'payment_date' => 'required',
         ]);
 
         $payment =PaymentRequest::create([
@@ -137,19 +143,30 @@ class PaymentController extends Controller
         
         $id =$request->id;
 
+        $payment_request =PaymentRequest::find($id);
+
+        $check_payment =Payment::where('payment_reference',$payment_request->payment_reference)
+                      // ->where('member_id','!=',null)
+                       ->first();
+
+       if ($check_payment) {
+           $payment_request->comment ="Payment Already Exist";
+           $payment_request->attended_date =Carbon::now();
+           $payment_request->approved_by =Auth::user()->id;
+           $payment_request->status =2;
+           $payment_request->save();
+
+           return response()->json([
+            'success' =>false,
+            'errors' =>'Payment Already Exist',
+        ],500);
+       }
+
         try {
 
-        DB::transaction(function() use ($id ){
+        DB::transaction(function() use ($payment_request ){
             // case 1 loan repayment
-             $payment_request =PaymentRequest::find($id);
-
-             $check_payment =Payment::where('payment_reference',$payment_request->payment_reference)
-                           // ->where('member_id','!=',null)
-                            ->first();
-
-            if ($check_payment) {
-                throw new GeneralException('Payment Already Exist');
-            }
+            
 
             $payment =Payment::where('payment_reference',$payment_request->payment_reference)->first();
             if (!$payment) {
@@ -214,4 +231,22 @@ class PaymentController extends Controller
         ],200);
 
     }
+
+    public function rejectPayment(Request $request){
+        $id      =$request->uuid;
+        $comment =$request->comment;
+
+        $payment_request =PaymentRequest::find($id);
+        $payment_request->status =2;
+        $payment_request->comment =$comment;
+        $payment_request->attended_date =Carbon::now();
+        $payment_request->approved_by =Auth::user()->id;
+        $payment_request->save();
+
+        return response()->json([
+            'success' =>true,
+            'message' =>'Action Done Successfully',
+        ],200);
+    }
+
 }

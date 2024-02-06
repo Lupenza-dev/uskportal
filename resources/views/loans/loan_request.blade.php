@@ -69,7 +69,7 @@
                                             <button class="btn btn-success btn-sm" id="{{ $request->uuid }}" onclick="approveApplication(id)" > <span class="fa fa-check"></span></button>
                                             <button class="btn btn-warning btn-sm edit-btn" data-uuid="{{ $request->uuid}}"  data-bs-toggle="modal" data-bs-target="#myModal1" > <span class="fa fa-times"></span></button>
                                             @else
-                                            <button class="btn btn-success btn-sm edit-btn" onclick="alert('Loan Application Already Disbursed')" > <span class="fa fa-info"></span></button>
+                                            <button class="btn btn-success btn-sm" onclick="alert('Loan Application Already Disbursed')" > <span class="fa fa-info"></span></button>
                                             @endif
                                         </td>
                                     </tr>
@@ -98,7 +98,7 @@
             </div>
             <div class="modal-body">
                <form id="update_form">
-                <input type="text" id="uuid" name="uuid" id="">
+                <input type="hidden" id="uuid" name="uuid" id="">
                 <input type="hidden" id="action" name="action" value="reject">
                 <div class="form-group row">
                     <div class="col-md-12 mt-1">

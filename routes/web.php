@@ -37,18 +37,19 @@ Route::group(['middleware'=>"auth"],function(){
     Route::get('payment-disbursed',[PaymentController::class,'paymentDisbursed'])->name('payment.disbursed');
     Route::get('pending-payments',[PaymentController::class,'pendingPayments'])->name('pending.payments');
     Route::post('approve-payment',[PaymentController::class,'approvePayment'])->name('approve.payment');
+    Route::post('reject-payment',[PaymentController::class,'rejectPayment'])->name('reject.payment.request');
     Route::get('loan-guarantor',[LoanApplicationController::class,'loanGuarantor'])->name('loan.guarantors');
     Route::post('loan-request',[LoanApplicationController::class,'loanRequest'])->name('loan.request');
     Route::post('member-permission',[MemberController::class,'memberPermission'])->name('member.permission');
     Route::get('due-days',[HomeController::class,'testJobs']);
 
     Route::resources([
-        'users'          =>UserController::class,
+        // 'users'          =>UserController::class,
         'members'        =>MemberController::class,
         'applications'   =>LoanApplicationController::class,
         'loan'           =>LoanController::class,
         'payment'        =>PaymentController::class,
-        'roles'          =>RoleController::class,
+        // 'roles'          =>RoleController::class,
         'permissions'    =>PermissionController::class,
        ]);
 });

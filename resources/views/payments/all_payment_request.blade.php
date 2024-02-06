@@ -56,10 +56,15 @@
                                         <td>{{ number_format($payment->amount) }}</td> 
                                         <td>{{ $payment->payment_type }}</td> 
                                         <td>{{ $payment->payment_for_month }}</td> 
-                                        <td>{!! $payment->status_format !!}</td>
+                                        <td>{!! $payment->status_format !!} <br>
+                                            {{ $payment->comment}}
+
+                                        </td>
                                         @if (in_array(Auth::user()->id,[1,4,8]))
                                         <td>
                                             <button class="btn btn-primary btn-sm" id="{{ $payment->id}}" onclick="approvePayment(id)" title="Approve"><i class="fa fa-check"></i></button>
+                                            <button class="btn btn-warning btn-sm edit-btn" data-uuid="{{ $payment->id}}"  data-bs-toggle="modal" data-bs-target="#myModal1" > <span class="fa fa-times"></span></button>
+
                                         </td>   
                                         @endif
                                        
@@ -77,6 +82,37 @@
         </div> <!-- end row -->
     </div> <!-- container-fluid -->
 </div>
+ <!-- sample modal content -->
+ <div id="myModal1" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Reject Payment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+               <form id="update_form">
+                <input type="text" id="uuid" name="uuid" id="">
+                <input type="hidden" id="action" name="action" value="reject">
+                <div class="form-group row">
+                    <div class="col-md-12 mt-1">
+                        <label for="Name">Comment</label>
+                        <textarea name="comment" class="form-control" required></textarea>
+                    </div>
+                    <div class="col-md-12" style="margin-top: 5px" id="update_alert">
+                    </div>
+                    <div class="col-md-12">
+                        <div class="mt-2 d-grid">
+                            <button class="btn btn-warning waves-effect waves-light"  id="update_btn" type="submit"> <span class="fas fa-times"></span> Reject</button>
+                        </div>
+                    </div>
+                </div>
+               </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 
 @endsection
 @push('scripts')
@@ -115,5 +151,61 @@
     );
   }
 </script>
+<script>
+    $('.edit-btn').on('click',function(){
+        var uuid =$(this).attr('data-uuid');
+        $('#uuid').val(uuid);
+    })
+</script>
+<script>
+    $(document).ready(function(){
+      $('#update_form').on('submit',function(e){ 
+          e.preventDefault();
+
+      $.ajaxSetup({
+      headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+           }
+          });
+      $.ajax({
+      type:'POST',
+      url:"{{ route('reject.payment.request')}}",
+      data : new FormData(this),
+      contentType: false,
+      cache: false,
+      processData : false,
+      success:function(response){
+        $('#update_alert').html('<div class="alert alert-success">'+response.message+'</div>');
+        setTimeout(function(){
+         location.reload();
+      },500);
+      },
+      error:function(response){
+          console.log(response.responseText);
+          if (jQuery.type(response.responseJSON.errors) == "object") {
+            $('#update_alert').html('');
+          $.each(response.responseJSON.errors,function(key,value){
+              $('#update_alert').append('<div class="alert alert-danger">'+value+'</div>');
+          });
+          } else {
+             $('#update_alert').html('<div class="alert alert-danger">'+response.responseJSON.errors+'</div>');
+          }
+          setTimeout(function(){
+                location.reload();
+        },500);
+      },
+      beforeSend : function(){
+                   $('#update_btn').html('<i class="fa fa-spinner fa-pulse fa-spin"></i> loading..........');
+                   $('#update_btn').attr('disabled', true);
+              },
+              complete : function(){
+                $('#update_btn').html('<i class="fa fa-save"></i> Grant');
+                $('#update_btn').attr('disabled', false);
+              }
+      });
+  });
+  });
+</script>
+
     
 @endpush

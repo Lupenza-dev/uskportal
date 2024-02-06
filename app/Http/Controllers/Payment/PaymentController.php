@@ -148,6 +148,13 @@ class PaymentController extends Controller
         $check_payment =Payment::where('payment_reference',$payment_request->payment_reference)
                       // ->where('member_id','!=',null)
                        ->first();
+        
+        if ($payment_request->status != 0) {
+            return response()->json([
+                'success' =>false,
+                'errors' =>'Action was already Done On This Request',
+            ],500);
+        }
 
        if ($check_payment) {
            $payment_request->comment ="Payment Already Exist";
@@ -237,6 +244,14 @@ class PaymentController extends Controller
         $comment =$request->comment;
 
         $payment_request =PaymentRequest::find($id);
+
+        if ($payment_request->status != 0) {
+            return response()->json([
+                'success' =>false,
+                'errors' =>'Action was already Done On This Request',
+            ],500);
+        }
+        
         $payment_request->status =2;
         $payment_request->comment =$comment;
         $payment_request->attended_date =Carbon::now();

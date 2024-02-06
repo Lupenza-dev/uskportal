@@ -92,7 +92,7 @@
             </div>
             <div class="modal-body">
                <form id="update_form">
-                <input type="text" id="uuid" name="uuid" id="">
+                <input type="hidden" id="uuid" name="uuid" id="">
                 <input type="hidden" id="action" name="action" value="reject">
                 <div class="form-group row">
                     <div class="col-md-12 mt-1">

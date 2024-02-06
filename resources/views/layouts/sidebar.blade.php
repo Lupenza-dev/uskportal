@@ -51,13 +51,13 @@
             <span key="t-file-manager">Payment Request</span>
         </a>
     </li>
-    <li class="menu-title" key="t-menu">User Management</li>
-    {{-- <li>
-        <a href="{{ url('users.index')}}" class="waves-effect">
-            <i class="bx bx-user"></i>
-            <span key="t-file-manager">Users</span>
+    <li class="menu-title" key="t-menu">Expenditure Management</li>
+    <li>
+        <a href="{{ route('expenditure')}}" class="waves-effect">
+            <i class="bx bx-list-ol"></i>
+            <span key="t-file-manager">Expenditures</span>
         </a>
-    </li> --}}
+    </li>
     {{-- <li>
         <a href="{{ url('roles.index')}}" class="waves-effect">
             <i class="bx bx-align-justify"></i>

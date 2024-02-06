@@ -6,6 +6,7 @@ use App\Exceptions\GeneralException;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\PaymentTrait;
 use App\Models\Loan\LoanContract;
+use App\Models\Payment\Expenditure;
 use App\Models\Payment\Payment;
 use App\Models\Payment\PaymentRequest;
 use App\Models\Payment\Payout;
@@ -251,12 +252,41 @@ class PaymentController extends Controller
                 'errors' =>'Action was already Done On This Request',
             ],500);
         }
-        
+
         $payment_request->status =2;
         $payment_request->comment =$comment;
         $payment_request->attended_date =Carbon::now();
         $payment_request->approved_by =Auth::user()->id;
         $payment_request->save();
+
+        return response()->json([
+            'success' =>true,
+            'message' =>'Action Done Successfully',
+        ],200);
+    }
+
+    public function expenditureForm(){
+        $payments =Expenditure::with('user')->latest()->get();
+        return view('payments.expenditures',compact('payments'));
+    }
+
+    public function storeExpenditure(Request $request){
+        $valid = $this->validate($request, [
+            'amount' => 'required',
+            'payment_reference' => [
+                'required',
+                Rule::unique('expenditures', 'payment_reference')
+            ],
+            'paid_to_who' => 'required',
+            'payment_date' => 'required',
+            'remarks' => 'required',
+        ]);
+
+        $data = Expenditure::create(array_merge($valid, [
+            'created_by' => Auth::id(),
+            'uuid'       => (string) Str::orderedUuid(),
+        ]));
+        
 
         return response()->json([
             'success' =>true,

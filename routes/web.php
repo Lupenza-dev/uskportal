@@ -38,6 +38,8 @@ Route::group(['middleware'=>"auth"],function(){
     Route::get('pending-payments',[PaymentController::class,'pendingPayments'])->name('pending.payments');
     Route::post('approve-payment',[PaymentController::class,'approvePayment'])->name('approve.payment');
     Route::post('reject-payment',[PaymentController::class,'rejectPayment'])->name('reject.payment.request');
+    Route::get('expenditures',[PaymentController::class,'expenditureForm'])->name('expenditure');
+    Route::post('store-expenditures',[PaymentController::class,'storeExpenditure'])->name('expenditure.store');
     Route::get('loan-guarantor',[LoanApplicationController::class,'loanGuarantor'])->name('loan.guarantors');
     Route::post('loan-request',[LoanApplicationController::class,'loanRequest'])->name('loan.request');
     Route::post('member-permission',[MemberController::class,'memberPermission'])->name('member.permission');

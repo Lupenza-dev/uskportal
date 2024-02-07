@@ -59,7 +59,16 @@ class LoanApplicationController extends Controller
         $vali_data =$request->validated();
         $plan      =$request->plan ?? 1;
 
+        if (count($vali_data['guarantors']) != 2) {
+            return response()->json([
+                'success' =>false,
+                'errors' =>"We need Two Guarantors"
+            ],500);
+        }
+
         $loan_application =LoanApplication::store($vali_data,$plan);
+
+        
 
         foreach ($vali_data['guarantors'] as $key => $value) {
             $guarantor =LoanGuarantor::create([

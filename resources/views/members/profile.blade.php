@@ -35,7 +35,7 @@
                             <div></div>
                             <h4 class="card-title text-center" >Member Profile</h4>
                             <div class="btn-group">
-                                @if (Auth::user()->member_id == $member->id)
+                                @if (Auth::user()->member_id == $member->id or true)
                                 <button type="button" class="btn btn-info">Actions</button>
                                 <button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="mdi mdi-chevron-down"></i>
@@ -133,7 +133,7 @@
                                                     <th>Last Purchase Date</th>
                                                     <td>{{ $member->member_saving?->last_purchase_date}}</td>
                                                     <th>Stock Due Days</th>
-                                                    <td>{{ $member->member_saving?->past_due_days}}</td>
+                                                    <td>{{ $member->member_saving?->stock_current_pdd}}</td>
                                                 </tr>
                                                 <tr>
                                                     <th>Stock Penalty</th>
@@ -154,7 +154,7 @@
                                                     <th>Last Fee Paid Date</th>
                                                     <td>{{ $member->member_saving?->last_fee_purchase_date}}</td>
                                                     <th>Fee Due Days</th>
-                                                    <td>{{ $member->member_saving?->fee_past_due_days}}</td>
+                                                    <td>{{ $member->member_saving?->fee_current_pdd}}</td>
                                                 </tr>
                                                 <tr>
                                                     <th>Fee Penalty</th>
@@ -179,6 +179,7 @@
                                                         <th>Days</th>
                                                         <th>Penalty</th>
                                                         <th>Penalty Paid</th>
+                                                        <th>Outstanding</th>
                                                         <th>Paid Status</th>
                                                       </tr>
                                                 </thead>
@@ -190,6 +191,7 @@
                                                     <td>{{ $stock->past_due_days }}</td> 
                                                     <td>{{ number_format($stock->penalty) }}</td> 
                                                     <td>{{ number_format($stock->penalty_paid) }}</td> 
+                                                    <td>{{ number_format($stock->outstanding_amount) }}</td> 
                                                     <td>{!! $stock->paid_status_format !!}</td> 
                                                 </tr>
                                                 @endforeach
@@ -211,6 +213,7 @@
                                                         <th>Days</th>
                                                         <th>Penalty</th>
                                                         <th>Penalty Paid</th>
+                                                        <th>Outstanding</th>
                                                         <th>Paid Status</th>
                                                       </tr>
                                                 </thead>
@@ -222,6 +225,7 @@
                                                     <td>{{ $fee->past_due_days }}</td> 
                                                     <td>{{ number_format($fee->penalty) }}</td> 
                                                     <td>{{ number_format($fee->penalty_paid) }}</td> 
+                                                    <td>{{ number_format($fee->outstanding_amount) }}</td> 
                                                     <td>{!! $fee->paid_status_format !!}</td> 
                                                 </tr>
                                                 @endforeach
@@ -334,6 +338,8 @@
                             <option value="" selected>choose payment type</option>
                             <option value="stock">Stock Payment</option>
                             <option value="fee">Fee Payment</option>
+                            <option value="fee penalty">Fee Penalty</option>
+                            <option value="stock penalty">Stock Penalty</option>
                         </select>
                     </div>
                     <div class="mb-4">

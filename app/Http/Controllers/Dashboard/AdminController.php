@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Loan\LoanContract;
+use App\Models\Member\FeePastDue;
 use App\Models\Member\Member;
 use App\Models\Member\MemberSavingSummary;
+use App\Models\Member\StockPastDue;
 use App\Models\Payment\Payment;
 use DateTime;
 use Illuminate\Http\Request;
@@ -16,7 +18,9 @@ class AdminController extends Controller
         $members =Member::count();
         $member_savings =MemberSavingSummary::get();
         $loans =LoanContract::get();
-        return view('dashboards.admin_dashboard',compact('members','member_savings','loans'));
+        $stock  =StockPastDue::get();
+        $fee    =FeePastDue::get();
+        return view('dashboards.admin_dashboard',compact('members','member_savings','loans','stock','fee'));
     }
 
     public function columnChart(){

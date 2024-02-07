@@ -40,11 +40,17 @@ class Member extends Model
     }
 
     public function stock_payments(){
-        return $this->hasMany(Payment::class)->where('payment_type','stock')->latest();
+        return $this->hasMany(Payment::class)
+        ->where('payment_type','stock')
+        ->orWhere('payment_type','stock penalty')
+        ->latest();
     }
 
     public function fee_payments(){
-        return $this->hasMany(Payment::class)->where('payment_type','fee')->latest();
+        return $this->hasMany(Payment::class)
+        ->where('payment_type','fee')
+        ->orWhere('payment_type','fee penalty')
+        ->latest();
     }
 
     public function id_type(){

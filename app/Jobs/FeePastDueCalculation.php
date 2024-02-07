@@ -63,10 +63,17 @@ class FeePastDueCalculation implements ShouldQueue
                             'member_id' =>$member->member_id,
                             'fee_for_month' =>$nextMonthAfterPurchase->endOfMonth()->format('F Y'),
                         ],[
-                            'past_due_days' =>$pastDueDays,
-                            'penalty'       =>$pastDueDays * 1500,
-                            'uuid'          =>Str::orderedUuid(),
+                            'past_due_days'   =>$pastDueDays,
+                            'penalty'         =>$pastDueDays * 1500,
+                            'uuid'            =>Str::orderedUuid(),
                         ]);
+
+                        $member->fee_current_pdd =$pastDueDays;
+                        $member->save();
+
+
+                        $stock->outstanding_amount =$stock->penalty - $stock->penalty_paid;
+                        $stock->save();
                         
                       
                     }

@@ -4,6 +4,7 @@ namespace App\Http\Traits;
 use App\Models\Loan\Installment;
 use App\Models\Loan\LoanApplication;
 use App\Models\Loan\LoanContract;
+use App\Models\Member\FeePastDue;
 use App\Models\Member\MemberSavingSummary;
 use App\Models\Member\StockPastDue;
 use Carbon\Carbon;
@@ -211,10 +212,11 @@ trait PaymentTrait {
         return true;
     }
 
-    public function deductStockPenalty($payment,$member_saving){
+    public function updateStockPenalty($payment){
 
          $paid_amount = $payment->amount;
-
+         $member_saving =MemberSavingSummary::where('member_id',$payment->member_id)->first();
+        $excess_paid =0;
          while($paid_amount > 0){
             // check if Penalt Exist
             $stock_penalty_data =StockPastDue::where('member_id',$member_saving->member_id)
@@ -224,123 +226,114 @@ trait PaymentTrait {
                                 ->first();
 
             if(!$stock_penalty_data){
-                $paid_amount =$paid_amount;
+                $excess_paid =$paid_amount;
                 break;
             }
-             //$original_paid_amount = $paid_amount;
-             $current_penalt_amount_paid = 0;
-             $penalt_amount_paid = 0;
-             $penalt_amount = 0;
 
-             if($stock_penalty_data->penalt > 0){
+            //change
 
-                $remain_amount= $paid_amount - $stock_penalty_data->penalt;
-
-                 if($remain_amount < 0){
-                     $current_penalt_amount_paid = $paid_amount;
-                     $penalt_amount = $stock_penalty_data->penalt - $current_penalt_amount_paid;
-                     $penalt_amount_paid = $stock_penalty_data->penalt_paid + $current_penalt_amount_paid;
-                 }else{
-                     $current_penalt_amount_paid = $stock_penalty_data->penalt;
-                     $penalt_amount = 0;
-                     $penalt_amount_paid = $stock_penalty_data->penalt_paid + $current_penalt_amount_paid;
-                 }
-
-             }else{
-                $penalt_amount_paid = $stock_penalty_data->penalt_paid;
-             }
-
-
-             $paid_amount = $paid_amount - $current_penalt_amount_paid;
-             
-             $paid_out_amount =0;
+           // check if Outstanding amount is greated than  paid
+            $paid_out_amount =0;
+            if ($stock_penalty_data->outstanding_amount > $paid_amount) {
+                $paid_out_amount = $paid_amount;
+                $outstanding_amount   = $stock_penalty_data->outstanding_amount - $paid_amount;
+                $penalty_paid         = $stock_penalty_data->penalty_paid + $paid_amount;
+                $status = 0;
+            } else {
+                $paid_out_amount =$stock_penalty_data->outstanding_amount;
+                $outstanding_amount = 0;
+                $penalty_paid = $stock_penalty_data->penalty_paid + $stock_penalty_data->outstanding_amount;
+                $status = 1;
+            }
             
-             if($stock_penalty_data->outstanding_amount > $paid_amount){
-                 $paid_out_amount = $paid_amount;
-                 $outstanding_amount = $stock_penalty_data->outstanding_amount - $paid_out_amount;
-                 $current_balance = $stock_penalty_data->current_balance + $paid_out_amount;
-                 $status = 0;
-             }else{
-                 $paid_out_amount = $stock_penalty_data->outstanding_amount;
-                 $outstanding_amount = 0;
-                 $current_balance = $stock_penalty_data->current_balance + $paid_out_amount;
-                 $status = 1;
-             }
 
-                 $stock_penalty_data->current_balance            =$current_balance;
-                 $stock_penalty_data->outstanding_amount         =$outstanding_amount;
-                 $stock_penalty_data->penalt_paid                =$penalt_amount_paid;
-                // $stock_penalty_data->penalt_amount              =$penalt_amount;
-                 $stock_penalty_data->last_paid_amount           =$paid_out_amount;
-                 $stock_penalty_data->paid_status                =$status;
-                 $stock_penalty_data->payment_id                 =$payment->id;
-                 $stock_penalty_data->save();
+            $stock_penalty_data->current_balance            =$penalty_paid;
+            $stock_penalty_data->outstanding_amount         =$outstanding_amount;
+            $stock_penalty_data->penalty_paid                =$penalty_paid;
+        // $stock_penalty_data->penalty_amount              =$penalt_amount;
+            $stock_penalty_data->last_paid_amount           =$paid_amount;
+            $stock_penalty_data->paid_status                =$status;
+            $stock_penalty_data->payment_id                 =$payment->id;
+            $stock_penalty_data->save();
 
-
-
-
-                 $amount_tosettle = $stock_penalty_data->outstanding_amount + $stock_penalty_data->penalt;
-
-                 $total_paid_amount = $paid_out_amount + $current_penalt_amount_paid;
-                 $paid_amount = $paid_amount - $paid_out_amount;
-                                     
+            $paid_amount = $paid_amount - $paid_out_amount;
              
-         }
+        }
 
-         $stock_penalty_data =StockPastDue::where('member_id',$member_saving->member_id)
-                                ->where('paid_status',0)
-                                ->where('outstanding_amount','>',0)
-                                ->orderBy('id','ASC')
-                                ->first();
-         
-         $installment_ =Installment::where('loan_contract_id',$payment->loan_contract_id)
-                                     ->where('outstanding_amount','>',0)
-                                     ->orderby('installment_no','ASC')
-                                     ->first();
+       $new_stock =StockPastDue::where('member_id',$member_saving->member_id)->get();
 
-        //  $cont_due_day = $contract->past_due_days;
-        //  $next_payment_date = today();
-        //  if($installment_){
-        //      $next_payment_date = $installment_->payment_date;
-        //      $cont_due_day = $installment_->due_days;
-        //  }
+       $member_saving->stock_penalty             =$new_stock->sum('outstanding_amount');
+       $member_saving->stock_penalty_excess_paid =$member_saving->stock_penalty_excess_paid + $excess_paid;
+       $member_saving->stock_current_pdd         =$new_stock->sum('outstanding_amount') > 0 ?  $member_saving->past_due_days : 0;
+       $member_saving->save();
 
-    //      $member_saving->stock_penalty_paid =
-         
-
-    //      $installments =$contract->installments;
-
-    //      $outstanding_amount = $installments->sum('outstanding_amount');
-    //      $current_balance    = $installments->sum('current_balance');
-    //      $penalt_amount      = $installments->sum('penalt_amount');
-    //      $past_due_amount    = $installments->sum('past_due_amount');
-    //      $penalt_amount_paid = $installments->sum('penalt_amount_paid');
-
-    //    $contract->current_balance = $current_balance; 
-    //    $contract->date_of_last_payment = $payment->created_at;
-    //    $contract->last_payment_amount = $payment->amount;
-    //    $contract->next_payment_date = $next_payment_date;
-    //    $contract->outstanding_amount = $outstanding_amount;
-    //    $contract->excess_amount = $excess_amount;
-    //    $contract->past_due_days = $cont_due_day;
-    //    $contract->past_due_amount = $past_due_amount;
-    //    $contract->penalt_amount = $penalt_amount;
-    //    $contract->penalt_amount_paid = $penalt_amount_paid;
-    //    $contract->save();
-
-    //    $payment->loan_contract_id =$contract->id;
-    //    $payment->save();
-
-      // $this->updateStatus($contract);
-
-      //$settled_payment =StockPastDue::where('payment_id',$payment->id)->get();
-
-       return $paid_amount;
-       
-
-
+       return true;
 
     }
+
+    public function updateFeePenalty($payment){
+
+        $paid_amount = $payment->amount;
+        $member_saving =MemberSavingSummary::where('member_id',$payment->member_id)->first();
+       $excess_paid =0;
+        while($paid_amount > 0){
+           // check if Penalt Exist
+           $fee_penalty_data =FeePastDue::where('member_id',$member_saving->member_id)
+                               ->where('paid_status',0)
+                               ->where('outstanding_amount','>',0)
+                               ->orderBy('id','ASC')
+                               ->first();
+
+           if(!$fee_penalty_data){
+               $excess_paid =$paid_amount;
+               break;
+           }
+
+           //change
+
+          // check if Outstanding amount is greated than  paid
+           $paid_out_amount =0;
+           if ($fee_penalty_data->outstanding_amount > $paid_amount) {
+               $paid_out_amount = $paid_amount;
+               $outstanding_amount   = $fee_penalty_data->outstanding_amount - $paid_amount;
+               $penalty_paid         = $fee_penalty_data->penalty_paid + $paid_amount;
+               $status = 0;
+           } else {
+               $paid_out_amount =$fee_penalty_data->outstanding_amount;
+               $outstanding_amount = 0;
+               $penalty_paid = $fee_penalty_data->penalty_paid + $fee_penalty_data->outstanding_amount;
+               $status = 1;
+           }
+           
+
+           $fee_penalty_data->current_balance            =$penalty_paid;
+           $fee_penalty_data->outstanding_amount         =$outstanding_amount;
+           $fee_penalty_data->penalty_paid                =$penalty_paid;
+       // $fee_penalty_data->penalty_amount              =$penalt_amount;
+           $fee_penalty_data->last_paid_amount           =$paid_amount;
+           $fee_penalty_data->paid_status                =$status;
+           $fee_penalty_data->payment_id                 =$payment->id;
+           $fee_penalty_data->save();
+
+           $paid_amount = $paid_amount - $paid_out_amount;
+            
+       }
+
+      $penalty_remain =$member_saving->stock_penalty - $payment->amount;
+
+      $new_stock =FeePastDue::where('member_id',$member_saving->member_id)->get();
+
+      $member_saving->fee_penalty               =$new_stock->sum('outstanding_amount');
+      $member_saving->fee_penalty_excess_paid   =$member_saving->fee_penalty_excess_paid + $excess_paid;
+      $member_saving->fee_current_pdd           =$new_stock->sum('outstanding_amount') > 0 ?  $member_saving->fee_past_due_days : 0;
+      $member_saving->save();
+
+      return true;
+      
+
+
+
+   }
 
     
 }

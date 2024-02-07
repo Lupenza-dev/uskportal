@@ -59,10 +59,13 @@ class StockPastDueCalculation implements ShouldQueue
                             'member_id' =>$member->member_id,
                             'stock_for_month' =>$nextMonthAfterPurchase->endOfMonth()->format('F Y'),
                         ],[
-                            'past_due_days' =>$pastDueDays,
-                            'penalty'       =>$pastDueDays * 1500,
-                            'uuid'          =>Str::orderedUuid(),
+                            'past_due_days'      =>$pastDueDays,
+                            'penalty'            =>$pastDueDays * 1500,
+                            'uuid'               =>Str::orderedUuid(),
                         ]);
+
+                        $member->stock_current_pdd =$pastDueDays;
+                        $member->save();
 
                         $stock->outstanding_amount =$stock->penalty - $stock->penalty_paid;
                         $stock->save();

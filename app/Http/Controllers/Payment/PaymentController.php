@@ -218,6 +218,22 @@ class PaymentController extends Controller
                 $payment_request->save();
             }
 
+            if ($payment_request->payment_type == "stock penalty") {
+                $this->updateStockPenalty($payment);
+
+                $payment_request->status =1;
+                $payment_request->approved_by =Auth::user()->id;
+                $payment_request->save();
+            }
+
+            if ($payment_request->payment_type == "fee penalty") {
+                $this->updateFeePenalty($payment);
+
+                $payment_request->status =1;
+                $payment_request->approved_by =Auth::user()->id;
+                $payment_request->save();
+            }
+
             //return true;
         });
 

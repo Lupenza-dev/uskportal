@@ -34,14 +34,41 @@ class LoanApplication extends Model
             
         }
 
-        $member =Member::with('initiated_loan_application')->where('id',Auth::user()->member_id)->first();
+        $member =Member::with('initiated_normal_loan_application','initiated_emergence_loan_application','member_saving')->where('id',Auth::user()->member_id)->first();
 
         if ($member) {
-            $initiated_loan =$member->initiated_loan_application;
-            if ($initiated_loan) {
-                $initiated_loan->level ="CANCELED";
-                $initiated_loan->save();
+
+           
+
+            if ($loan_type == 2) {
+
+                if ($amount > ($member->member_saving?->stock * 3)) {
+                    return [
+                        'success' =>false,
+                        'errors'  =>'Your Stock does not qualify to take that loan amount'
+                    ];
+                }
+                // check active contract
+                if ($member->active_normal_loan) {
+                    return [
+                        'success' =>false,
+                        'errors'  =>'You have an Active Normal Loan , Close The Loan To Apply New Loan'
+                    ];
+                }
+
+                $initiated_loan =$member->initiated_normal_loan_application;
+                if ($initiated_loan) {
+                    $initiated_loan->level ="CANCELED";
+                    $initiated_loan->save();
+                }
+            } else {
+                $initiated_loan =$member->initiated_emergence_loan_application;
+                if ($initiated_loan) {
+                    $initiated_loan->level ="CANCELED";
+                    $initiated_loan->save();
+                }
             }
+            
         }
 
         $loan =LoanApplication::create([
@@ -58,7 +85,11 @@ class LoanApplication extends Model
             'uuid'               =>(string)Str::ordereduuid()
         ]);
 
-        return $loan;
+
+        return [
+            'success' =>true,
+            'loan_id'    =>$loan->id
+        ];
     }
 
     public function member(){

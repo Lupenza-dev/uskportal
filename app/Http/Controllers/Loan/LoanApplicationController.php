@@ -62,18 +62,26 @@ class LoanApplicationController extends Controller
         if (count($vali_data['guarantors']) != 2) {
             return response()->json([
                 'success' =>false,
-                'errors' =>"We need Two Guarantors"
+                'errors' =>"Two Guarantors needed To Apply Loan"
             ],500);
         }
 
-        $loan_application =LoanApplication::store($vali_data,$plan);
+       
 
-        
+        $data =LoanApplication::store($vali_data,$plan);
+
+        if ($data['success'] == false) {
+            return response()->json([
+                        'success' =>false,
+                        'errors' =>$data['errors']
+                ],500);
+        }
+
 
         foreach ($vali_data['guarantors'] as $key => $value) {
             $guarantor =LoanGuarantor::create([
                 'member_id'           =>$value,
-                'loan_application_id' =>$loan_application->id,
+                'loan_application_id' =>$data['loan_id'],
                 'uuid'                =>(string)Str::orderedUuid()
             ]);
         }
@@ -82,11 +90,10 @@ class LoanApplicationController extends Controller
         if (Auth::user()->member?->member_type == 2) {
             $guarantor =LoanGuarantor::create([
                 'member_id'           =>Auth::user()->member?->member_refered?->refer_member_id,
-                'loan_application_id' =>$loan_application->id,
+                'loan_application_id' =>$data['loan_id'],
                 'uuid'                =>(string)Str::orderedUuid()
             ]);
         }
-    
 
         return response()->json([
             'success' =>true,

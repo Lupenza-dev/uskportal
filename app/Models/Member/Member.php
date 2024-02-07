@@ -35,6 +35,20 @@ class Member extends Model
         return $this->hasOne(LoanApplication::class)->where('level','initiated');
     }
 
+    public function initiated_normal_loan_application(){
+        return $this->hasOne(LoanApplication::class)
+        ->where('level','initiated')->where('loan_type_id',2);
+    }
+
+    public function initiated_emergence_loan_application(){
+        return $this->hasOne(LoanApplication::class)
+        ->where('level','initiated')->where('loan_type_id',1);
+    }
+
+    public function active_normal_loan(){
+        return $this->hasOne(LoanContract::class)->where('loan_type_id',2)->where('status','!=','CLOSED');
+    }
+
     public function getMemberNameAttribute(){
         return ucwords($this->first_name.' '.$this->last_name);
     }

@@ -35,7 +35,7 @@
                             <div></div>
                             <h4 class="card-title text-center" >Member Profile</h4>
                             <div class="btn-group">
-                                @if (Auth::user()->member_id == $member->id or true)
+                                @if (Auth::user()->member_id == $member->id)
                                 <button type="button" class="btn btn-info">Actions</button>
                                 <button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="mdi mdi-chevron-down"></i>

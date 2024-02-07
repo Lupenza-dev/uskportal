@@ -33,7 +33,7 @@ class LoanApplicationController extends Controller
                     ->whereHas('loan',function($query){
                         $query->where('level','!=','CANCELED');
                     })
-                // ->where('member_id',Auth::user()->member_id)
+                   ->where('member_id',Auth::user()->member_id)
                     ->get();
         return view('loans.loan_request',compact('requests'));
     }

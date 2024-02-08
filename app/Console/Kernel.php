@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Jobs\FeePastDueCalculation;
+use App\Jobs\LoanPenaltCalculation;
 use App\Jobs\StockPastDueCalculation;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -18,8 +19,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->job(new StockPastDueCalculation)->dailyAt('00:01');
-        $schedule->job(new FeePastDueCalculation)->dailyAt('00:03');
+        $schedule->job(new StockPastDueCalculation)->dailyAt('23:55');
+        $schedule->job(new FeePastDueCalculation)->dailyAt('23:58');
+        $schedule->job(new LoanPenaltCalculation)->dailyAt('23:50');
     }
 
     /**

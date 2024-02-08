@@ -305,7 +305,7 @@
       processData : false,
       success:function(response){
         console.log(response);
-        $('#alert').html('<div class="alert alert-success">'+response.message+'</div>');
+        $('#update_alert').html('<div class="alert alert-success">'+response.message+'</div>');
         setTimeout(function(){
          location.reload();
       },500);

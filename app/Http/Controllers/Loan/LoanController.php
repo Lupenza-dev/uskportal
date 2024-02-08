@@ -48,7 +48,7 @@ class LoanController extends Controller
         if ($loan_application->guarantors()->where('status','!=','Approved')->count()) {
             return response()->json([
                 'success' =>false,
-                'errors' =>"Loan Application not approved or rejected by Guarantor",
+                'errors' =>"Loan Application does not approved by Guarantor",
             ],500);
         }
 

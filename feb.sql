@@ -12,3 +12,7 @@ ALTER TABLE `fee_past_dues` ADD `current_balance` FLOAT NOT NULL DEFAULT '0' AFT
 ALTER TABLE `member_saving_summaries` ADD `fee_penalty_excess_paid` FLOAT NOT NULL DEFAULT '0' AFTER `stock_current_pdd`, ADD `fee_current_pdd` INT NOT NULL DEFAULT '0' AFTER `fee_penalty_excess_paid`;
 ALTER TABLE `fee_past_dues` ADD `outstanding_amount` FLOAT NOT NULL DEFAULT '0' AFTER `current_balance`;
 
+
+already above
+ALTER TABLE `loan_contracts` ADD `highest_past_due_days` INT NOT NULL DEFAULT '0' AFTER `past_due_days`;
+

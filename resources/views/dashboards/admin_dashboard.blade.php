@@ -234,48 +234,6 @@
                                 <div class="card-body">
                                     <div class="d-flex">
                                         <div class="flex-grow-1">
-                                            <p class="text-muted fw-medium">Open Loan</p>
-                                            <h4 class="mb-0">{{ number_format($loans->where('status','GRANTED')->sum('total_loan_amount'))}}</h4>
-                                        </div>
-
-                                        <div class="flex-shrink-0 align-self-center">
-                                            <div class="avatar-sm rounded-circle bg-primary mini-stat-icon">
-                                                <span class="avatar-title rounded-circle bg-primary">
-                                                    <i class="bx bx-money font-size-24"></i>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card mini-stats-wid">
-                                <div class="card-body">
-                                    <div class="d-flex">
-                                        <div class="flex-grow-1">
-                                            <p class="text-muted fw-medium">Closed Loan</p>
-                                            <h4 class="mb-0">{{ number_format($loans->where('status','CLOSED')->sum('total_loan_amount'))}}</h4>
-                                        </div>
-
-                                        <div class="flex-shrink-0 align-self-center">
-                                            <div class="avatar-sm rounded-circle bg-primary mini-stat-icon">
-                                                <span class="avatar-title rounded-circle bg-primary">
-                                                    <i class="bx bx-money font-size-24"></i>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="card mini-stats-wid">
-                                <div class="card-body">
-                                    <div class="d-flex">
-                                        <div class="flex-grow-1">
                                             <p class="text-muted fw-medium">Total Paid</p>
                                             <h4 class="mb-0">{{ number_format($loans->sum('current_balance'))}}</h4>
                                         </div>
@@ -311,13 +269,55 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="card mini-stats-wid">
+                                <div class="card-body">
+                                    <div class="d-flex">
+                                        <div class="flex-grow-1">
+                                            <p class="text-muted fw-medium">Loan Penalty</p>
+                                            <h4 class="mb-0">{{ number_format($installments->sum('penalt_amount') + $installments->sum('penalt_amount_paid'))}}</h4>
+                                        </div>
+
+                                        <div class="flex-shrink-0 align-self-center">
+                                            <div class="mini-stat-icon avatar-sm rounded-circle bg-primary">
+                                                <span class="avatar-title">
+                                                    <i class="bx bx-money font-size-24"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card mini-stats-wid">
+                                <div class="card-body">
+                                    <div class="d-flex">
+                                        <div class="flex-grow-1">
+                                            <p class="text-muted fw-medium">Penalty Paid</p>
+                                            <h4 class="mb-0">{{ number_format($installments->sum('penalt_amount_paid'))}}</h4>
+                                        </div>
+
+                                        <div class="flex-shrink-0 align-self-center ">
+                                            <div class="avatar-sm rounded-circle bg-primary mini-stat-icon">
+                                                <span class="avatar-title rounded-circle bg-primary">
+                                                    <i class="bx bx-money font-size-24"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-md-3">
                             <div class="card mini-stats-wid">
                                 <div class="card-body">
                                     <div class="d-flex">
                                         <div class="flex-grow-1">
                                             <p class="text-muted fw-medium">Expected Interest</p>
-                                            <h4 class="mb-0">{{ number_format($loans->sum('interest_amount') + $loans->sum('penalt_amount_paid'))}}</h4>
+                                            <h4 class="mb-0">{{ number_format($loans->sum('interest_amount'))}}</h4>
                                         </div>
 
                                         <div class="flex-shrink-0 align-self-center">
@@ -337,7 +337,7 @@
                                     <div class="d-flex">
                                         <div class="flex-grow-1">
                                             <p class="text-muted fw-medium">Collected Interest</p>
-                                            <h4 class="mb-0">{{ number_format($loans->where('status','CLOSED')->sum('interest_amount') + $loans->where('status','CLOSED')->sum('penalt_amount_paid'))}}</h4>
+                                            <h4 class="mb-0">{{ number_format($loans->where('status','CLOSED')->sum('interest_amount'))}}</h4>
                                         </div>
 
                                         <div class="flex-shrink-0 align-self-center">

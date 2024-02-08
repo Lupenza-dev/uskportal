@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\Loan\Installment;
 use App\Models\Loan\LoanContract;
 use App\Models\Member\FeePastDue;
 use App\Models\Member\Member;
@@ -20,7 +21,8 @@ class AdminController extends Controller
         $loans =LoanContract::get();
         $stock  =StockPastDue::get();
         $fee    =FeePastDue::get();
-        return view('dashboards.admin_dashboard',compact('members','member_savings','loans','stock','fee'));
+        $installments =Installment::get();
+        return view('dashboards.admin_dashboard',compact('members','member_savings','loans','stock','fee','installments'));
     }
 
     public function columnChart(){

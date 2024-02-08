@@ -44,9 +44,7 @@
                                     <th>Interest </th>
                                     <th>Loan Type </th>
                                     <th>Status</th>
-                                    @if (in_array(Auth::user()->id,[1,4,8]))
                                     <th>Action</th>
-                                    @endif
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -62,15 +60,19 @@
                                         <td>{{ number_format($loan->interest_amount) }}</td>
                                         <td>{{ $loan->loan_type->name ?? "N/A"}}</td>
                                         <td>{!! $loan->status_format !!}</td>
-                                        @if (in_array(Auth::user()->id,[1,4,8]))
+                                        
                                         <td>
+                                            @if (in_array(Auth::user()->id,[1,4,8]))
                                             @if ($loan->level == "initiated")
                                               <button class="btn btn-success btn-sm edit-btn" data-uuid="{{ $loan->uuid}}" data-amount ="{{ $loan->amount }}" data-bs-toggle="modal" data-bs-target="#myModal1" > <span class="fa fa-edit"></span></button>
                                             @else
                                               <button class="btn btn-success btn-sm edit-btn" onclick="alert('Loan Application Already Disbursed')" > <span class="fa fa-edit"></span></button>
                                             @endif
+                                            @endif
+                                            <a href="{{ route('loan.application.profile',$loan->uuid)}}">
+                                                <button class="btn btn-primary btn-sm"> <span class="fa fa-user"></span></button>
+                                            </a>
                                         </td>  
-                                        @endif
                                        
                                     </tr>
                                     @endforeach

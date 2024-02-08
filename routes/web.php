@@ -42,6 +42,7 @@ Route::group(['middleware'=>"auth"],function(){
     Route::post('store-expenditures',[PaymentController::class,'storeExpenditure'])->name('expenditure.store');
     Route::get('loan-guarantor',[LoanApplicationController::class,'loanGuarantor'])->name('loan.guarantors');
     Route::post('loan-request',[LoanApplicationController::class,'loanRequest'])->name('loan.request');
+    Route::get('loan-application-profile/{loan_uuid}',[LoanApplicationController::class,'loanProfile'])->name('loan.application.profile');
     Route::post('member-permission',[MemberController::class,'memberPermission'])->name('member.permission');
     Route::get('due-days',[HomeController::class,'testJobs']);
 

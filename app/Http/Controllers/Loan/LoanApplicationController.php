@@ -38,6 +38,11 @@ class LoanApplicationController extends Controller
         return view('loans.loan_request',compact('requests'));
     }
 
+    public function loanProfile($uuid){
+        $loan =LoanApplication::where('uuid',$uuid)->first();
+        return view('loans.loan_application_profile',compact('loan'));
+    }
+
     /**
      * Show the form for creating a new resource.
      *

@@ -9,7 +9,9 @@ use App\Models\Member\FeePastDue;
 use App\Models\Member\Member;
 use App\Models\Member\MemberSavingSummary;
 use App\Models\Member\StockPastDue;
+use App\Models\Payment\Expenditure;
 use App\Models\Payment\Payment;
+use App\Models\Payment\Payout;
 use DateTime;
 use Illuminate\Http\Request;
 
@@ -22,7 +24,8 @@ class AdminController extends Controller
         $stock  =StockPastDue::get();
         $fee    =FeePastDue::get();
         $installments =Installment::get();
-        return view('dashboards.admin_dashboard',compact('members','member_savings','loans','stock','fee','installments'));
+        $expected_balance =Payment::sum('amount') - Payout::sum('amount') - Expenditure::sum('amount');
+        return view('dashboards.admin_dashboard',compact('members','member_savings','loans','stock','fee','installments','expected_balance'));
     }
 
     public function columnChart(){

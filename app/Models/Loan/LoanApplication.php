@@ -27,10 +27,10 @@ class LoanApplication extends Model
             $plan =$plan;
             $interest_rate =0.8;
         } else {
-            $total_loan_amount =$amount *1.10;
+            $total_loan_amount =$amount *1.05;
             $plan =1;
             $installment =$total_loan_amount;
-            $interest_rate =10;
+            $interest_rate =5;
             
         }
 

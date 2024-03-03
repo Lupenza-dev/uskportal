@@ -36,8 +36,9 @@ class FeePastDueCalculation implements ShouldQueue
 
     public function handle(){
         Log::info('FeePastDueCalculation');
+        $lastMonth = Carbon::parse(Carbon::now()->subMonth()->endOfMonth())->endOfMonth()->format('F Y');
         $members =MemberSavingSummary::with('member')
-        ->where('fee_for_month','!=',date('F Y'))
+        ->where('fee_for_month','!=',$lastMonth)
         ->orWhere('fees',null)
         ->get();
        // $members =MemberSavingSummary::where('stock',0)->get();
@@ -45,30 +46,30 @@ class FeePastDueCalculation implements ShouldQueue
 
             foreach ($members as $member) {
                  // If no stock purchase found, calculate past due days
-                $currentDate = Carbon::now();
                 
-                $lastPurchaseDate = Carbon::parse($member->fee_for_month ?? "2023-12-01")->endOfMonth();
-        
+                $currentDate = Carbon::now();
+                $now = Carbon::now();
+                $lastPurchaseDate = Carbon::parse($now->subMonth()->endOfMonth())->endOfMonth();
                 if ($currentDate->greaterThan($lastPurchaseDate) ) {
                     // Check if the next month after the purchase date has passed
-                    $nextMonthAfterPurchase = $lastPurchaseDate->copy()->addMonth();
-                    if ($currentDate->greaterThanOrEqualTo($nextMonthAfterPurchase->endOfMonth())) {
+                   // $nextMonthAfterPurchase = $lastPurchaseDate->copy()->addMonth();
+                   // if ($currentDate->greaterThanOrEqualTo($nextMonthAfterPurchase->endOfMonth())) {
                         // Calculate past due days
-                        $pastDueDays = $currentDate->diffInDays($nextMonthAfterPurchase->endOfMonth());
-                        $member->fee_past_due_days =$pastDueDays;
-                        $member->fee_penalty =$pastDueDays * 1500;
+                        $pastDueDays = $currentDate->diffInDays($lastPurchaseDate->endOfMonth());
+                        $member->fee_past_due_days =$member->fee_past_due_days + $pastDueDays;
+                        $member->fee_penalty =$member->fee_penalty  + ($pastDueDays * 1500);
                         $member->save();
                         
                         $stock =FeePastDue::updateOrCreate([
                             'member_id' =>$member->member_id,
-                            'fee_for_month' =>$nextMonthAfterPurchase->endOfMonth()->format('F Y'),
+                            'fee_for_month' =>$lastPurchaseDate->endOfMonth()->format('F Y'),
                         ],[
                             'past_due_days'   =>$pastDueDays,
                             'penalty'         =>$pastDueDays * 1500,
                             'uuid'            =>Str::orderedUuid(),
                         ]);
 
-                        $member->fee_current_pdd =$pastDueDays;
+                        $member->fee_current_pdd =$member->fee_current_pdd + $pastDueDays;
                         $member->save();
 
 
@@ -76,7 +77,7 @@ class FeePastDueCalculation implements ShouldQueue
                         $stock->save();
                         
                       
-                    }
+                    //}
                 }
             }
            

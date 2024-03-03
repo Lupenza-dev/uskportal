@@ -37,41 +37,41 @@ class StockPastDueCalculation implements ShouldQueue
 
     public function handle(){
         Log::info('StockPastDueCalculation');
-        $members =MemberSavingSummary::where('stock_for_month','!=',date('F Y'))->orWhere('stock',0)->get();
+        $lastMonth = Carbon::parse(Carbon::now()->subMonth()->endOfMonth())->endOfMonth()->format('F Y');
+        $members   =MemberSavingSummary::where('stock_for_month','!=',$lastMonth)->orWhere('stock',0)->get();
         if ($members->count() > 0) {
 
             foreach ($members as $member) {
                  // If no stock purchase found, calculate past due days
                 $currentDate = Carbon::now();
-                $lastPurchaseDate = Carbon::parse($member->stock_for_month ?? "2023-12-01")->endOfMonth();
-        
+                $now = Carbon::now();
+                $lastPurchaseDate = Carbon::parse($now->subMonth()->endOfMonth())->endOfMonth();
                 if ($currentDate->greaterThan($lastPurchaseDate)) {
                     // Check if the next month after the purchase date has passed
-                    $nextMonthAfterPurchase = $lastPurchaseDate->copy()->addMonth();
-                    if ($currentDate->greaterThanOrEqualTo($nextMonthAfterPurchase->endOfMonth())) {
+                   // if ($currentDate->greaterThanOrEqualTo($nextMonthAfterPurchase->endOfMonth())) {
                         // Calculate past due days
-                        $pastDueDays = $currentDate->diffInDays($nextMonthAfterPurchase->endOfMonth());
-                        $member->past_due_days =$pastDueDays;
-                        $member->stock_penalty =$pastDueDays * 1500;
+                        $pastDueDays =$currentDate->diffInDays($lastPurchaseDate->endOfMonth());
+                        $member->past_due_days =$member->past_due_days + $pastDueDays;
+                        $member->stock_penalty =$member->stock_penalty + ($pastDueDays * 1500);
                         $member->save();
                         
                         $stock =StockPastDue::updateOrCreate([
                             'member_id' =>$member->member_id,
-                            'stock_for_month' =>$nextMonthAfterPurchase->endOfMonth()->format('F Y'),
+                            'stock_for_month' =>$lastPurchaseDate->endOfMonth()->format('F Y'),
                         ],[
                             'past_due_days'      =>$pastDueDays,
                             'penalty'            =>$pastDueDays * 1500,
                             'uuid'               =>Str::orderedUuid(),
                         ]);
 
-                        $member->stock_current_pdd =$pastDueDays;
+                        $member->stock_current_pdd =$member->stock_current_pdd + $pastDueDays;
                         $member->save();
 
                         $stock->outstanding_amount =$stock->penalty - $stock->penalty_paid;
                         $stock->save();
                         
                       
-                    }
+                    //}
                 }
             }
            

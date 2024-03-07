@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Payment;
 use App\Exceptions\GeneralException;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\PaymentTrait;
+use App\Jobs\SendNotification;
 use App\Models\Loan\LoanContract;
 use App\Models\Payment\Expenditure;
 use App\Models\Payment\Payment;
@@ -133,6 +134,8 @@ class PaymentController extends Controller
             'added_by'          =>Auth::user()->id
         ]);
 
+        SendNotification::dispatch($payment,1)->onQueue('emails');
+
         return response()->json([
             'success' =>true,
             'message' =>"Payment Addedd , Wait for Approval Payment to effect the Loan",
@@ -233,6 +236,8 @@ class PaymentController extends Controller
                 $payment_request->approved_by =Auth::user()->id;
                 $payment_request->save();
             }
+            Log::info('Tunaenda kutuma email');
+            SendNotification::dispatch($payment,2)->onQueue('emails');
 
             //return true;
         });
@@ -274,6 +279,9 @@ class PaymentController extends Controller
         $payment_request->attended_date =Carbon::now();
         $payment_request->approved_by =Auth::user()->id;
         $payment_request->save();
+
+        Log::info('Tunaenda kutuma rejection email');
+        SendNotification::dispatch($payment_request,3)->onQueue('emails');
 
         return response()->json([
             'success' =>true,

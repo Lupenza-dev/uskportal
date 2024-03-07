@@ -168,8 +168,8 @@ trait PaymentTrait {
             $member_saving->last_stock_amount =$payment->amount;
             $member_saving->last_purchase_date =$payment->payment_date;
             $member_saving->stock_for_month  =$payment->payment_for_month;
-            $member_saving->past_due_days  =0;
-            $member_saving->stock_penalty  =0;
+           // $member_saving->past_due_days  =0;
+           // $member_saving->stock_penalty  =0;
             $member_saving->save();
         }else{
             $member_saving =MemberSavingSummary::create([
@@ -194,8 +194,8 @@ trait PaymentTrait {
             $member_saving->last_fee_purchase_date =$payment->payment_date;
             $member_saving->fee_for_month  =$payment->payment_for_month;
             $member_saving->last_fee_amount =$payment->amount;
-            $member_saving->fee_past_due_days  =0;
-            $member_saving->fee_penalty        =0;
+           // $member_saving->fee_past_due_days  =0;
+          //  $member_saving->fee_penalty        =0;
             $member_saving->save();
         }else{
             $member_saving =MemberSavingSummary::create([

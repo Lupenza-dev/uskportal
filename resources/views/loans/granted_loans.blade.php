@@ -41,6 +41,7 @@
                                     <th>Amount</th>
                                     <th>Total Loan </th>
                                     <th>Installment </th>
+                                    <th>Outstanding </th>
                                     <th>Plan </th>
                                     <th>Interest </th>
                                     <th>Loan Type </th>
@@ -58,6 +59,7 @@
                                         <td>{{ number_format($loan->total_amount) }}</td>
                                         <td>{{ number_format($loan->total_loan_amount) }}</td>
                                         <td>{{ number_format($loan->installment_amount) }}</td>
+                                        <td>{{ number_format($loan->outstanding_amount) }}</td>
                                         <td>{{ number_format($loan->plan) }}</td>
                                         <td>{{ number_format($loan->interest_amount) }}</td>
                                         <td>{{ $loan->loan_type->name ?? "N/A"}}</td>

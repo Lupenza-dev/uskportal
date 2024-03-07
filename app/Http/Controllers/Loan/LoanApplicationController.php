@@ -11,6 +11,7 @@ use Auth;
 use Str;
 use App\Models\Member\Member;
 use App\Http\Requests\LoanApplicationRequest;
+use App\Jobs\SendNotification;
 use Carbon\Carbon;
 
 class LoanApplicationController extends Controller
@@ -89,6 +90,9 @@ class LoanApplicationController extends Controller
                 'loan_application_id' =>$data['loan_id'],
                 'uuid'                =>(string)Str::orderedUuid()
             ]);
+
+            SendNotification::dispatch($guarantor,4)->onQueue('emails');
+
         }
 
         // if member refered
@@ -98,6 +102,8 @@ class LoanApplicationController extends Controller
                 'loan_application_id' =>$data['loan_id'],
                 'uuid'                =>(string)Str::orderedUuid()
             ]);
+
+            SendNotification::dispatch($guarantor,4)->onQueue('emails');
         }
 
         return response()->json([
@@ -161,6 +167,13 @@ class LoanApplicationController extends Controller
             'attended_date' =>Carbon::now(),
             'comment'       =>$request->comment ?? null,
         ]);
+
+        if ($action == "approve") {
+              SendNotification::dispatch($loan,5)->onQueue('emails');
+        } else {
+              SendNotification::dispatch($loan,6)->onQueue('emails');
+        }
+        
 
         return response()->json([
             'success' =>true,

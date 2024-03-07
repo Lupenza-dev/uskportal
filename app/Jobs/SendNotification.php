@@ -69,6 +69,39 @@ class SendNotification implements ShouldQueue
                 Log::info('Tunatuma email rejection inside job');
                 $this->sendEmail($message,$subject,$receiver_name,$receiver_email);
             break;
+
+         case 4:
+                $guarantor =$this->resource;
+                $message   =$guarantor->loan?->member?->member_name. " has requested a loan amount of". number_format($guarantor->loan?->amount) ." and request you to be his guarantor , please login to the system to approve/reject this request";
+                $subject ="Loan Application Request Notification";
+                $receiver_name =$guarantor->member?->member_name;
+                $receiver_email =$guarantor->member?->email;
+               // $receiver_email ="luhaboy@gmail.com";
+                Log::info('Tunatuma email loan request inside job');
+                $this->sendEmail($message,$subject,$receiver_name,$receiver_email);
+            break;
+
+         case 5:
+                $guarantor =$this->resource;
+                $message   =$guarantor->member?->member_name." has approved to guarantor the request you sent to him";
+                $subject ="Loan Application Approved Notification";
+                $receiver_name  =$guarantor->loan?->member?->member_name;
+                $receiver_email =$guarantor->loan?->member?->email;
+               // $receiver_email ="luhaboy@gmail.com";
+                Log::info('Tunatuma email loan approve request inside job');
+                $this->sendEmail($message,$subject,$receiver_name,$receiver_email);
+            break;
+
+         case 6:
+                $guarantor =$this->resource;
+                $message   =$guarantor->member?->member_name." has rejected to guarantor the request you sent to him because of ".$guarantor->comment;
+                $subject ="Loan Application Rejected Notification";
+                $receiver_name  =$guarantor->loan?->member?->member_name;
+                $receiver_email =$guarantor->loan?->member?->email;
+               // $receiver_email ="luhaboy@gmail.com";
+                Log::info('Tunatuma email loan reject request inside job');
+                $this->sendEmail($message,$subject,$receiver_name,$receiver_email);
+            break;
         
         default:
             # code...

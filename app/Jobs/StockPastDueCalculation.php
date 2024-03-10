@@ -26,7 +26,7 @@ class StockPastDueCalculation implements ShouldQueue
      */
     public $notificationQueue = 'emails';
 
-    
+
     public function __construct()
     {
         //
@@ -54,9 +54,9 @@ class StockPastDueCalculation implements ShouldQueue
                    // if ($currentDate->greaterThanOrEqualTo($nextMonthAfterPurchase->endOfMonth())) {
                         // Calculate past due days
                         $pastDueDays =$currentDate->diffInDays($lastPurchaseDate->endOfMonth());
-                        $member->past_due_days =$member->past_due_days + $pastDueDays;
-                        $member->stock_penalty =$member->stock_penalty + ($pastDueDays * 1500);
-                        $member->save();
+                       // $member->past_due_days =$member->past_due_days + $pastDueDays;
+                       // $member->stock_penalty =$member->stock_penalty + ($pastDueDays * 1500);
+                       // $member->save();
                         
                         $stock =StockPastDue::updateOrCreate([
                             'member_id' =>$member->member_id,
@@ -67,7 +67,10 @@ class StockPastDueCalculation implements ShouldQueue
                             'uuid'               =>Str::orderedUuid(),
                         ]);
 
-                        $member->stock_current_pdd =$member->stock_current_pdd + $pastDueDays;
+                      //  $member->stock_current_pdd =$member->stock_current_pdd + $pastDueDays;
+                        $member->stock_current_pdd =$member->overDueStock->sum('past_due_days');
+                        $member->past_due_days =$member->dueStock->sum('past_due_days');
+                        $member->stock_penalty =$member->overDueStock->sum('penalty');
                         $member->save();
 
                         $stock->outstanding_amount =$stock->penalty - $stock->penalty_paid;

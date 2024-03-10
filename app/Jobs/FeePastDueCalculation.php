@@ -58,9 +58,9 @@ class FeePastDueCalculation implements ShouldQueue
                    // if ($currentDate->greaterThanOrEqualTo($nextMonthAfterPurchase->endOfMonth())) {
                         // Calculate past due days
                         $pastDueDays = $currentDate->diffInDays($lastPurchaseDate->endOfMonth());
-                        $member->fee_past_due_days =$member->fee_past_due_days + $pastDueDays;
-                        $member->fee_penalty =$member->fee_penalty  + ($pastDueDays * 1500);
-                        $member->save();
+                       // $member->fee_past_due_days =$member->fee_past_due_days + $pastDueDays;
+                        // $member->fee_penalty =$member->fee_penalty  + ($pastDueDays * 1500);
+                        // $member->save();
                         
                         $stock =FeePastDue::updateOrCreate([
                             'member_id' =>$member->member_id,
@@ -71,9 +71,11 @@ class FeePastDueCalculation implements ShouldQueue
                             'uuid'            =>Str::orderedUuid(),
                         ]);
 
-                        $member->fee_current_pdd =$member->fee_current_pdd + $pastDueDays;
+                        // $member->fee_current_pdd =$member->fee_current_pdd + $pastDueDays;
+                        $member->fee_current_pdd   =$member->overDueFee->sum('past_due_days');
+                        $member->fee_past_due_days =$member->dueFees->sum('past_due_days');
+                        $member->fee_penalty       =$member->overDueFee->sum('penalty');
                         $member->save();
-
 
                         $stock->outstanding_amount =$stock->penalty - $stock->penalty_paid;
                         $stock->save();

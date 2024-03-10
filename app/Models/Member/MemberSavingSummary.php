@@ -17,4 +17,20 @@ class MemberSavingSummary extends Model
         return $this->belongsTo(Member::class,'member_id');
     }
 
+    public function overDueStock(){
+        return $this->hasMany(StockPastDue::class,'member_id','member_id')->where('paid_status',0);
+    }
+
+    public function dueStock(){
+        return $this->hasMany(StockPastDue::class,'member_id','member_id');
+    }
+
+    public function overDueFee(){
+        return $this->hasMany(FeePastDue::class,'member_id','member_id')->where('paid_status',0);
+    }
+
+    public function dueFees(){
+        return $this->hasMany(FeePastDue::class,'member_id','member_id');
+    }
+
 }

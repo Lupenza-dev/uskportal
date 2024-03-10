@@ -41,7 +41,11 @@ class StockPastDueCalculation implements ShouldQueue
     public function handle(){
         Log::info('StockPastDueCalculation');
         $lastMonth = Carbon::parse(Carbon::now()->subMonth()->endOfMonth())->endOfMonth()->format('F Y');
-        $members   =MemberSavingSummary::where('stock_for_month','!=',$lastMonth)->orWhere('stock',0)->get();
+        $members   =MemberSavingSummary::
+                    whereNotIn('stock_for_month',[$lastMonth,Carbon::now()->format('F Y')])
+                    ->orWhere('stock',0)
+                    ->get();
+                    
         if ($members->count() > 0) {
 
             foreach ($members as $member) {

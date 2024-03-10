@@ -40,7 +40,7 @@ class FeePastDueCalculation implements ShouldQueue
         Log::info('FeePastDueCalculation');
         $lastMonth = Carbon::parse(Carbon::now()->subMonth()->endOfMonth())->endOfMonth()->format('F Y');
         $members =MemberSavingSummary::with('member')
-        ->where('fee_for_month','!=',$lastMonth)
+        ->whereNotIn('fee_for_month',[$lastMonth,Carbon::now()->format('F Y')])
         ->orWhere('fees',null)
         ->get();
        // $members =MemberSavingSummary::where('stock',0)->get();

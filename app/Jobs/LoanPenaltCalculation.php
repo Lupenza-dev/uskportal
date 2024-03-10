@@ -21,6 +21,8 @@ class LoanPenaltCalculation implements ShouldQueue
      *
      * @return void
      */
+    public $notificationQueue = 'emails';
+
     public function __construct()
     {
         //

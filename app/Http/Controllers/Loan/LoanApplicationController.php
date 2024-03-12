@@ -164,12 +164,13 @@ class LoanApplicationController extends Controller
         $action =$request->action;
         $uuid =$request->uuid;
 
-        $loan =LoanGuarantor::where('uuid',$uuid)->update([
+        $loan_ =LoanGuarantor::where('uuid',$uuid)->update([
             'status'        =>($action == "approve") ? "Approved" : "Rejected",
             'attended_date' =>Carbon::now(),
             'comment'       =>$request->comment ?? null,
         ]);
 
+        $loan =LoanGuarantor::where('uuid',$uuid)->first();
         if ($action == "approve") {
               SendNotification::dispatch($loan,5)->onQueue('emails');
         } else {

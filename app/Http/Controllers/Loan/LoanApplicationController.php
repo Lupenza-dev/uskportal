@@ -26,7 +26,7 @@ class LoanApplicationController extends Controller
         $members    =Member::whereNot('id',Auth::user()->member_id)->get();
         $loan_types =LoanType::get();
         $loans      =LoanApplication::with('member','loan_type')
-                    ->whereNotIn('level',['CANCELED','GRANTED'])
+                    ->whereNotIn('level',['CANCELED','GRANTED','CLOSED'])
                     ->latest()->get();
         return view('loans.loan_applications',compact('loan_types','members','loans'));
     }

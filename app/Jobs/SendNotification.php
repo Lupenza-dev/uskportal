@@ -72,7 +72,7 @@ class SendNotification implements ShouldQueue
 
          case 4:
                 $guarantor =$this->resource;
-                $message   =$guarantor->loan?->member?->member_name. " has requested a loan amount of ". number_format($guarantor->loan?->amount) ." and request you to be his guarantor , please login to the system to approve/reject this request";
+                $message   =$guarantor->loan?->member?->member_name. " has requested a loan amount of  ". number_format($guarantor->loan?->amount) ." and request you to be his guarantor , please login to the system to approve/reject this request";
                 $subject ="Loan Application Request Notification";
                 $receiver_name =$guarantor->member?->member_name;
                 $receiver_email =$guarantor->member?->email;

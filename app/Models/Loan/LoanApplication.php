@@ -62,6 +62,20 @@ class LoanApplication extends Model
                     $initiated_loan->save();
                 }
             } else {
+
+                if ($amount > 1000000) {
+                    return [
+                        'success' =>false,
+                        'errors'  =>'You Can not take emergence loan more than 1M'
+                    ];
+                }
+
+                if ($member->active_emergence_loan) {
+                    return [
+                        'success' =>false,
+                        'errors'  =>'You have an Active Emergence Loan , Close The Loan To Apply New Loan'
+                    ];
+                }
                 $initiated_loan =$member->initiated_emergence_loan_application;
                 if ($initiated_loan) {
                     $initiated_loan->level ="CANCELED";

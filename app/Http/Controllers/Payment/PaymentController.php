@@ -138,7 +138,7 @@ class PaymentController extends Controller
 
         return response()->json([
             'success' =>true,
-            'message' =>"Payment Addedd , Wait for Approval Payment to effect the Loan",
+            'message' =>"Payment Addedd , Wait for Approval Payment to effect",
         ],200);
 
     }

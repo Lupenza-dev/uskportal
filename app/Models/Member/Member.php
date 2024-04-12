@@ -49,6 +49,10 @@ class Member extends Model
         return $this->hasOne(LoanContract::class)->where('loan_type_id',2)->where('status','!=','CLOSED');
     }
 
+    public function active_emergence_loan(){
+        return $this->hasOne(LoanContract::class)->where('loan_type_id',1)->where('status','!=','CLOSED');
+    }
+
     public function getMemberNameAttribute(){
         return ucwords($this->first_name.' '.$this->last_name);
     }

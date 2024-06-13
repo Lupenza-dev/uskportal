@@ -78,4 +78,34 @@ class LoanContract extends Model
     public function payments(){
         return $this->hasMany(Payment::class);
     }
+
+    public function scopeWithFilters($query,$request){
+        
+        $start_date        =$request['start_date'] ?? null;
+        $end_date          =$request['end_date'] ?? null;
+        $loan_status       =$request['loan_status'] ?? null;
+        $member_id         =$request['member_id'] ?? null;
+    
+        return $query->when($start_date,function($query) use ($start_date,$end_date){
+            if ($start_date != null || $end_date != null) {
+                if ($start_date != null && $end_date != null)
+                    $query->whereBetween('start_date', [$start_date, $end_date]);
+    
+                else if ($start_date != null)
+                    $query->where('start_date', '>=', $start_date);
+    
+                else if ($end_date != null)
+                    $query->where('start_date', '<=', $end_date);
+            }
+            })
+            ->when($loan_status,function($query) use ($loan_status){
+                $query->where('status',$loan_status);
+            })
+           
+            ->when($member_id,function($query) use ($member_id){
+                $query->where('member_id',$member_id);
+            });
+          
+           
+      }
 }

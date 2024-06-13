@@ -5,23 +5,32 @@ namespace App\Http\Controllers\Loan;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\LoanStoreRequest;
+use App\Http\Traits\LoanExportTrait;
 use App\Models\Loan\LoanApplication;
 use App\Models\Loan\LoanContract;
 use App\Models\Loan\LoanGuarantor;
+use App\Models\Member\Member;
 use App\Models\Payment\Payout;
 use Illuminate\Support\Facades\Log;
 
 class LoanController extends Controller
 {
+    use LoanExportTrait;
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $loans =LoanContract::with('member','loan_type')->latest('start_date')->get();
-        return view('loans.granted_loans',compact('loans'));
+        $requests = $request->all();
+        $loans =LoanContract::with('member','loan_type')
+                ->when($requests,function($query) use ($requests){
+                    $query->withfilters($requests);
+                })
+                ->latest('start_date')->get();
+        $members =Member::pluck('last_name','id')->all();
+        return view('loans.granted_loans',compact('loans','members','requests'));
     }
 
     /**
@@ -121,5 +130,15 @@ class LoanController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function downloadReport(Request $request){
+        $requests =$request->all();
+        $loans =LoanContract::with('member','loan_type','guarantors')
+                ->when($requests,function($query) use ($requests){
+                    $query->withfilters($requests);
+                })
+                ->latest('start_date')->get();
+        return self::generateLoanExcel($loans);
     }
 }

@@ -45,6 +45,7 @@ Route::group(['middleware'=>"auth"],function(){
     Route::get('loan-application-profile/{loan_uuid}',[LoanApplicationController::class,'loanProfile'])->name('loan.application.profile');
     Route::post('member-permission',[MemberController::class,'memberPermission'])->name('member.permission');
     Route::get('due-days',[HomeController::class,'testJobs']);
+    Route::get('download/loan/report',[LoanController::class,'downloadReport'])->name('download.loan.report');
 
     Route::resources([
         // 'users'          =>UserController::class,

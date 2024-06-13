@@ -1,6 +1,10 @@
 @extends('layouts.master')
 @section('content')
-
+<style>
+    hr{
+        border: 0.5px solid #CED4D9
+    }
+</style>
 <div class="page-content">
     <div class="container-fluid">
 
@@ -30,6 +34,36 @@
                         {{-- <div style="display: flex; flex-direction: row; justify-content:flex-end; padding: 5px 0px 5px 0px">
                             <button class="btn btn-primary btn-sm waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#myModal"> <span class="fa fa-plus font-size-15"></span> Add Application</button>
                         </div> --}}
+                        <hr>
+                        <form action="">
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <label for="">Member</label>
+                                  {!! Form::select('member_id',$members,$requests['member_id'] ?? null, ['class' => 'form-control','placeholder'=>'Choose Member']) !!}
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="">Date(From)</label>
+                                    <input type="date" class="form-control" name="start_date" value="{{$requests['start_date'] ?? null}}" >
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="">Date(To)</label>
+                                    <input type="date" class="form-control" name="end_date" value="{{$requests['end_date'] ?? null}}" >
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="">Member</label>
+                                  {!! Form::select('loan_status',['GRANTED'=>'GRANTED','CLOSED'=>'CLOSED'],$requests['loan_status'] ?? null, ['class' => 'form-control','placeholder'=>'Choose Status']) !!}
+                                </div>
+                            </div>
+                            <div class="from-group row mt-3">
+                                <div class="col-md-12 text-center">
+                                    <button type="submit" class="btn btn-secondary" formaction="{{ route('loan.index')}}"><i class="fa fa-search"></i> Filter</button>
+                                    <button type="submit" class="btn btn-primary ml-2" formaction="{{ route('download.loan.report')}}"><i class="fa fa-download"></i> Download</button>
+
+                                </div>
+
+                            </div>
+                        </form>
+                      <hr>
                         <div class="table-responsive">
                             <table id="datatable" class="table table-bordered dt-responsive  nowrap w-100">
                                 <thead>

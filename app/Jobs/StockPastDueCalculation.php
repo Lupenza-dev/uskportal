@@ -62,23 +62,26 @@ class StockPastDueCalculation implements ShouldQueue
                        // $member->stock_penalty =$member->stock_penalty + ($pastDueDays * 1500);
                        // $member->save();
                         
-                        $stock =StockPastDue::updateOrCreate([
-                            'member_id' =>$member->member_id,
-                            'stock_for_month' =>$lastPurchaseDate->endOfMonth()->format('F Y'),
-                        ],[
-                            'past_due_days'      =>$pastDueDays,
-                            'penalty'            =>$pastDueDays * 1500,
-                            'uuid'               =>Str::orderedUuid(),
-                        ]);
+                       if ($pastDueDays > 0) {
+                            $stock =StockPastDue::updateOrCreate([
+                                'member_id' =>$member->member_id,
+                                'stock_for_month' =>$lastPurchaseDate->endOfMonth()->format('F Y'),
+                            ],[
+                                'past_due_days'      =>$pastDueDays,
+                                'penalty'            =>$pastDueDays * 1500,
+                                'uuid'               =>Str::orderedUuid(),
+                            ]);
 
-                      //  $member->stock_current_pdd =$member->stock_current_pdd + $pastDueDays;
-                        $member->stock_current_pdd =$member->overDueStock->sum('past_due_days');
-                        $member->past_due_days =$member->dueStock->sum('past_due_days');
-                        $member->stock_penalty =$member->overDueStock->sum('penalty');
-                        $member->save();
+                        //  $member->stock_current_pdd =$member->stock_current_pdd + $pastDueDays;
+                            $member->stock_current_pdd =$member->overDueStock->sum('past_due_days');
+                            $member->past_due_days =$member->dueStock->sum('past_due_days');
+                            $member->stock_penalty =$member->overDueStock->sum('penalty');
+                            $member->save();
 
-                        $stock->outstanding_amount =$stock->penalty - $stock->penalty_paid;
-                        $stock->save();
+                            $stock->outstanding_amount =$stock->penalty - $stock->penalty_paid;
+                            $stock->save();
+                       }
+                       
                         
                       
                     //}

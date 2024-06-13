@@ -62,23 +62,26 @@ class FeePastDueCalculation implements ShouldQueue
                         // $member->fee_penalty =$member->fee_penalty  + ($pastDueDays * 1500);
                         // $member->save();
                         
-                        $stock =FeePastDue::updateOrCreate([
-                            'member_id' =>$member->member_id,
-                            'fee_for_month' =>$lastPurchaseDate->endOfMonth()->format('F Y'),
-                        ],[
-                            'past_due_days'   =>$pastDueDays,
-                            'penalty'         =>$pastDueDays * 1500,
-                            'uuid'            =>Str::orderedUuid(),
-                        ]);
-
-                        // $member->fee_current_pdd =$member->fee_current_pdd + $pastDueDays;
-                        $member->fee_current_pdd   =$member->overDueFee->sum('past_due_days');
-                        $member->fee_past_due_days =$member->dueFees->sum('past_due_days');
-                        $member->fee_penalty       =$member->overDueFee->sum('penalty');
-                        $member->save();
-
-                        $stock->outstanding_amount =$stock->penalty - $stock->penalty_paid;
-                        $stock->save();
+                        if ($pastDueDays > 0) {
+                            $stock =FeePastDue::updateOrCreate([
+                                'member_id' =>$member->member_id,
+                                'fee_for_month' =>$lastPurchaseDate->endOfMonth()->format('F Y'),
+                            ],[
+                                'past_due_days'   =>$pastDueDays,
+                                'penalty'         =>$pastDueDays * 1500,
+                                'uuid'            =>Str::orderedUuid(),
+                            ]);
+    
+                            // $member->fee_current_pdd =$member->fee_current_pdd + $pastDueDays;
+                            $member->fee_current_pdd   =$member->overDueFee->sum('past_due_days');
+                            $member->fee_past_due_days =$member->dueFees->sum('past_due_days');
+                            $member->fee_penalty       =$member->overDueFee->sum('penalty');
+                            $member->save();
+    
+                            $stock->outstanding_amount =$stock->penalty - $stock->penalty_paid;
+                            $stock->save();
+                        }
+                       
                         
                       
                     //}

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Member\Member;
 use Auth;
+use Carbon\Carbon;
 use Str;
 
 class LoanApplication extends Model
@@ -83,6 +84,18 @@ class LoanApplication extends Model
                 }
             }
             
+        }
+
+        //check if loan plan is within this year
+        $loan_end_date =processDate(Carbon::now());
+        $expected_end_date =$loan_end_date->addMonths($plan);
+        $end_year =Carbon::now()->endOfYear()->subDays(11);
+
+        if ($expected_end_date->greaterThanOrEqualTo($end_year)) {
+            return [
+                'success' =>false,
+                'errors'  =>"Selected Plan will make the loan end date to be out of this year $end_year"
+            ];
         }
 
         $loan =LoanApplication::create([

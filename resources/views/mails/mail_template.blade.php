@@ -5,5 +5,5 @@ Dear <strong>{{ $data['name'] }}</strong>,
 <p>
     Sincerely,<br />
     USK BrotherHood<br />
-    <a href="https://usk.eldizerfinance.co.tz/" target="_blank">https://uskbrotherhood.co.tz/</a>
+    <a href="https://uskbrotherhood.co.tz/" target="_blank">https://uskbrotherhood.co.tz/</a>
 </p>

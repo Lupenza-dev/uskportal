@@ -7,8 +7,10 @@ use Illuminate\Http\Request;
 use App\Models\Member\Member;
 use App\Models\Member\IdType;
 use App\Http\Requests\MemberStoreRequest;
+use App\Http\Traits\LoanExportTrait;
 use App\Models\Management\Permission;
 use App\Models\Member\MemberReference;
+use App\Models\Member\MemberSavingSummary;
 use Auth;
 use Str;
 use Spatie\Permission\Models\Role;
@@ -19,6 +21,7 @@ use Illuminate\Support\Facades\Log;
 
 class MemberController extends Controller
 {
+    use LoanExportTrait;
     /**
      * Display a listing of the resource.
      *
@@ -177,5 +180,10 @@ class MemberController extends Controller
         ],200);
 
 
+    }
+
+    public function generateReport(){
+        $members =Member::with('member_saving','payments')->orderBy('first_name','ASC')->get();
+        return self::generateMemberExcel($members);
     }
 }

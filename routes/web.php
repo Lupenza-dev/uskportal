@@ -46,6 +46,7 @@ Route::group(['middleware'=>"auth"],function(){
     Route::post('member-permission',[MemberController::class,'memberPermission'])->name('member.permission');
     Route::get('due-days',[HomeController::class,'testJobs']);
     Route::get('download/loan/report',[LoanController::class,'downloadReport'])->name('download.loan.report');
+    Route::get('generate-member-report',[MemberController::class,'generateReport'])->name('generate.member,report');
 
     Route::resources([
         // 'users'          =>UserController::class,

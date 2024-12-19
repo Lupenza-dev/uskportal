@@ -2,6 +2,8 @@
 namespace App\Http\Traits;
 
 // use Rap2hpoutre\FastExcel\Facades\FastExcel;
+
+use App\Models\Member\MemberSavingSummary;
 use Rap2hpoutre\FastExcel\FastExcel;
 
 
@@ -50,6 +52,28 @@ trait LoanExportTrait {
         foreach ($loans as $loan) {
             yield $loan;
         }
+    }
+
+    public function generateMemberExcel($members){
+        return (new FastExcel($this->loanGenerator($members)))->download('MemberReport.xlsx',function($member){
+            $total_savings =MemberSavingSummary::sum('stock');
+            return [
+            'Full name'      =>ucwords($member->member_name),
+            'Phone Number'   =>$member?->phone_number,
+            'ID Number'      =>$member?->id_number,
+            'DOB'            =>$member?->dob,
+            'Email'          =>$member?->email,
+            'Total Stock'    =>$member->member_saving->stock,
+            'Total Fee'      =>$member->member_saving->fees,
+            'Total Stock Penalt'        =>$member->member_saving->stock_penalty,
+            'Total Fee Penalt'          =>$member->member_saving->fee_penalty,
+            'Total Stock Past Due Days' =>$member->member_saving->past_due_days,
+            'Total Fee Past Due Days'   =>$member->member_saving->fee_past_due_days,
+            'Total Stock Penalt Paid'   =>$member->payments()->where('payment_type','stock penalty')->sum('amount'),
+            'Total Fee Penalt Paid'     =>$member->payments()->where('payment_type','fee penalty')->sum('amount'),
+            'Stock Percentage'          =>round($member->member_saving->stock / $total_savings,2) * 100,
+            ];
+        }); 
     }
     
 }

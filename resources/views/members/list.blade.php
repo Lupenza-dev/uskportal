@@ -29,6 +29,10 @@
                         <h4 class="card-title text-center" >Members</h4>
                         <div style="display: flex; flex-direction: row; justify-content:flex-end; padding: 5px 0px 5px 0px">
                             {{-- @can('Create Member') --}}
+                            <a href="{{ route('generate.member,report')}}">
+                             <button style="margin-right: 20px" class="btn btn-success btn-sm waves-effect waves-light"> <span class="fa fa-file-excel font-size-15"></span> Generate Report</button>
+                            </a>
+
                             @if (Auth::user()->id == 1)
                             <button class="btn btn-primary btn-sm waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#myModal"> <span class="fa fa-user-plus font-size-15"></span> Add Member</button>
                             @endif

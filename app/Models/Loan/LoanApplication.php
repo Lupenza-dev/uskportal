@@ -90,6 +90,7 @@ class LoanApplication extends Model
         $loan_end_date =processDate(Carbon::now());
         $expected_end_date =$loan_end_date->addMonths($plan);
         $end_year =Carbon::now()->endOfYear()->subDays(11);
+        // $end_year =Carbon::now()->endOfYear()->subDays(11);
 
         if ($expected_end_date->greaterThanOrEqualTo($end_year)) {
             return [

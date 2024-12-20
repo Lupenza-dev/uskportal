@@ -43,6 +43,7 @@ class StockPastDueCalculation implements ShouldQueue
         $lastMonth = Carbon::parse(Carbon::now()->subMonth()->endOfMonth())->endOfMonth()->format('F Y');
         $members   =MemberSavingSummary::
                     whereNotIn('stock_for_month',[$lastMonth,Carbon::now()->format('F Y')])
+                    ->where('financial_year_id',getFinancialYearId())
                     ->orWhere('stock',0)
                     ->get();
                     

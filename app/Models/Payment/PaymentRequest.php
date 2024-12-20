@@ -11,7 +11,7 @@ class PaymentRequest extends Model
 {
     use HasFactory;
 
-    protected $fillable =['amount','payment_date','payment_reference','member_id','payment_type','uuid','added_by','loan_contract_id','payment_for_month'];
+    protected $fillable =['amount','payment_date','payment_reference','member_id','payment_type','uuid','added_by','loan_contract_id','payment_for_month','getFinancialYearId'];
 
     public function member(){
         return $this->belongsTo(Member::class);

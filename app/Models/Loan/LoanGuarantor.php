@@ -10,7 +10,7 @@ class LoanGuarantor extends Model
 {
     use HasFactory;
 
-    protected $fillable=['member_id','loan_application_id','status','uuid','attended_date'];
+    protected $fillable=['member_id','loan_application_id','status','uuid','attended_date','financial_year_id'];
     
     public function loan(){
         return $this->belongsTo(LoanApplication::class,'loan_application_id');

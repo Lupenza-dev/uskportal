@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\FeePastDueCalculation;
+use App\Jobs\FinancialYearJob;
 use App\Jobs\StockPastDueCalculation;
 use App\Jobs\LoanPenaltCalculation;
 use App\Models\Loan\Installment;
@@ -39,7 +40,8 @@ class HomeController extends Controller
 
     public function testJobs(){
        // return $this->loanPenalty();
-        LoanPenaltCalculation::dispatch();
+        // LoanPenaltCalculation::dispatch();
+        FinancialYearJob::dispatch();
        // StockPastDueCalculation::dispatch();
        // FeePastDueCalculation::dispatch();
         return true;

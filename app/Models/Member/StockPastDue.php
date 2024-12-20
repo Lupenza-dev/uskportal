@@ -11,7 +11,7 @@ class StockPastDue extends Model
 
     protected $table ='stock_past_due';
 
-    protected $fillable =['member_id','stock_for_month','past_due_days','uuid','penalty'];
+    protected $fillable =['member_id','stock_for_month','past_due_days','uuid','penalty','financial_year_id'];
 
     public function getPaidStatusFormatAttribute(){
         switch ($this->paid_status) {

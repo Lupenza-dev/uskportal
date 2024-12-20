@@ -10,7 +10,7 @@ class Expenditure extends Model
 {
     use HasFactory;
 
-    protected $fillable =['amount','payment_date','payment_reference','remarks','uuid','created_by','paid_to_who'];
+    protected $fillable =['amount','payment_date','payment_reference','remarks','uuid','created_by','paid_to_who','financial_year_id'];
 
     public function user(){
         return $this->belongsTo(User::class,'created_by');

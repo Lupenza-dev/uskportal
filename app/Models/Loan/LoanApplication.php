@@ -14,7 +14,7 @@ class LoanApplication extends Model
     use HasFactory;
 
     protected $fillable=['member_id','amount','total_loan_amount','plan','installment_amount','fee_amount','interest_amount','interest_rate',
-    'loan_type_id','loan_code','uuid','level'];
+    'loan_type_id','loan_code','uuid','level','financial_year_id'];
 
     public static function store($loan_data,$plan){
         $amount     =$loan_data['amount'];

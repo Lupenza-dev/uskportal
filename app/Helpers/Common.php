@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Management\FinancialYear;
 use App\Models\Payment\PaymentLog;
 use Carbon\Carbon;
 
@@ -55,6 +56,13 @@ if(!function_exists('processDate')){
             // If it's 20 or greater, return the end of the month
             return $carbonDate->endOfMonth();
         }
+    }
+
+}
+
+if(!function_exists('getFinancialYearId')){
+    function getFinancialYearId() {
+       return FinancialYear::latest('id')->where('is_active',true)->first()->id;
     }
 
 }

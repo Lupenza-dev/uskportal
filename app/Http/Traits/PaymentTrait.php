@@ -161,7 +161,9 @@ trait PaymentTrait {
 
     public function updateStock($payment){
 
-        $member_saving =MemberSavingSummary::where('member_id',$payment->member_id)->first();
+        $member_saving =MemberSavingSummary::where('member_id',$payment->member_id)
+        ->where('financial_year_id',getFinancialYearId())
+        ->first();
         if ($member_saving) {
             $stock =$member_saving->stock;
             $member_saving->stock = $stock + $payment->amount;
@@ -187,7 +189,9 @@ trait PaymentTrait {
 
     public function updateFee($payment){
 
-        $member_saving =MemberSavingSummary::where('member_id',$payment->member_id)->first();
+        $member_saving =MemberSavingSummary::where('member_id',$payment->member_id)
+        ->where('financial_year_id',getFinancialYearId())
+        ->first();
         if ($member_saving) {
             $fees =$member_saving->fees;
             $member_saving->fees = $fees + $payment->amount;
@@ -215,13 +219,16 @@ trait PaymentTrait {
     public function updateStockPenalty($payment){
 
          $paid_amount = $payment->amount;
-         $member_saving =MemberSavingSummary::where('member_id',$payment->member_id)->first();
+         $member_saving =MemberSavingSummary::where('member_id',$payment->member_id)
+         ->where('financial_year_id',getFinancialYearId())
+         ->first();
         $excess_paid =0;
          while($paid_amount > 0){
             // check if Penalt Exist
             $stock_penalty_data =StockPastDue::where('member_id',$member_saving->member_id)
                                 ->where('paid_status',0)
                                 ->where('outstanding_amount','>',0)
+                                ->where('financial_year_id',getFinancialYearId())
                                 ->orderBy('id','ASC')
                                 ->first();
 
@@ -260,7 +267,9 @@ trait PaymentTrait {
              
         }
 
-       $new_stock =StockPastDue::where('member_id',$member_saving->member_id)->get();
+       $new_stock =StockPastDue::where('member_id',$member_saving->member_id)
+       ->where('financial_year_id',getFinancialYearId())
+       ->get();
 
        $member_saving->stock_penalty             =$new_stock->sum('outstanding_amount');
        $member_saving->stock_penalty_excess_paid =$member_saving->stock_penalty_excess_paid + $excess_paid;
@@ -274,13 +283,16 @@ trait PaymentTrait {
     public function updateFeePenalty($payment){
 
         $paid_amount = $payment->amount;
-        $member_saving =MemberSavingSummary::where('member_id',$payment->member_id)->first();
+        $member_saving =MemberSavingSummary::where('member_id',$payment->member_id)        
+                        ->where('financial_year_id',getFinancialYearId())
+                        ->first();
        $excess_paid =0;
         while($paid_amount > 0){
            // check if Penalt Exist
            $fee_penalty_data =FeePastDue::where('member_id',$member_saving->member_id)
                                ->where('paid_status',0)
                                ->where('outstanding_amount','>',0)
+                               ->where('financial_year_id',getFinancialYearId())
                                ->orderBy('id','ASC')
                                ->first();
 
@@ -321,7 +333,9 @@ trait PaymentTrait {
 
       $penalty_remain =$member_saving->stock_penalty - $payment->amount;
 
-      $new_stock =FeePastDue::where('member_id',$member_saving->member_id)->get();
+      $new_stock =FeePastDue::where('member_id',$member_saving->member_id)        
+                ->where('financial_year_id',getFinancialYearId())
+                ->get();
 
       $member_saving->fee_penalty               =$new_stock->sum('outstanding_amount');
       $member_saving->fee_penalty_excess_paid   =$member_saving->fee_penalty_excess_paid + $excess_paid;

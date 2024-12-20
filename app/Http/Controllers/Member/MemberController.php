@@ -28,7 +28,7 @@ class MemberController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
+    {   
         $members =Member::orderBy('first_name','ASC')->get();
         $id_types =IdType::get();
         $permissions =Permission::get();
@@ -99,7 +99,23 @@ class MemberController extends Controller
      */
     public function show($uuid)
     {
-        $member =Member::with('member_saving','stock_dues','fee_dues','stock_payments','fee_payments')->where('uuid',$uuid)->first();
+        $member =Member::with([
+            'member_saving'=>function($query){
+            $query->where('financial_year_id',getFinancialYearId());
+            },
+            'stock_dues'=>function($query){
+            $query->where('financial_year_id',getFinancialYearId());
+            },
+            'fee_dues'=>function($query){
+            $query->where('financial_year_id',getFinancialYearId());
+            },
+            'stock_payments'=>function($query){
+            $query->where('financial_year_id',getFinancialYearId());
+            },
+            'fee_payments'=>function($query){
+            $query->where('financial_year_id',getFinancialYearId());
+            },
+        ])->where('uuid',$uuid)->first();
         return view('members.profile',compact('member'));
     }
 

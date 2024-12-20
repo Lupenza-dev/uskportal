@@ -9,7 +9,7 @@ class FeePastDue extends Model
 {
     use HasFactory;
 
-    protected $fillable =['member_id','fee_for_month','past_due_days','uuid','penalty'];
+    protected $fillable =['member_id','fee_for_month','past_due_days','uuid','penalty','financial_year_id'];
 
     public function getPaidStatusFormatAttribute(){
         switch ($this->paid_status) {

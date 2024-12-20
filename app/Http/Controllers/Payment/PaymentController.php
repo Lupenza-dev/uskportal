@@ -131,8 +131,12 @@ class PaymentController extends Controller
             'payment_type'      =>$request->payment_type ?? null,
             'payment_for_month' =>$request->payment_for_month ?? null,
             'uuid'              =>(string)Str::orderedUuid(),
-            'added_by'          =>Auth::user()->id
+            'added_by'          =>Auth::user()->id,
         ]);
+
+        // update Financial year
+        $payment->financial_year_id =getFinancialYearId();
+        $payment->save();
 
         SendNotification::dispatch($payment,1)->onQueue('emails');
 
@@ -194,6 +198,10 @@ class PaymentController extends Controller
                     'uuid'                  =>(string)Str::orderedUuid(),
                     'loan_contract_id'      =>$payment_request->loan_contract_id,
                 ]);
+
+                 // update Financial year
+                $payment->financial_year_id =getFinancialYearId();
+                $payment->save();
             }
             if ($payment_request->payment_type == "loan") {
                     Log::info('tunaingia');

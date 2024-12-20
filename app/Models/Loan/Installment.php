@@ -10,7 +10,7 @@ class Installment extends Model
     use HasFactory;
 
     protected $fillable=['installment_no','installment_amount','current_balance','outstanding_amount','penalt_amount','past_due_days',
-    'penalt_paid_amount','last_paid_amount','last_paid_date','loan_contract_id','uuid','payment_date'];
+    'penalt_paid_amount','last_paid_amount','last_paid_date','loan_contract_id','uuid','payment_date','financial_year_id'];
 
     public function getStatusFormatAttribute(){
         switch ($this->status) {

@@ -2,6 +2,7 @@
 
 namespace App\Models\Loan;
 
+use App\Models\Management\FinancialYear;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Member\Member;
@@ -35,11 +36,14 @@ class LoanApplication extends Model
             
         }
 
-        $member =Member::with('initiated_normal_loan_application','initiated_emergence_loan_application','member_saving')->where('id',Auth::user()->member_id)->first();
+        $member =Member::with(['initiated_normal_loan_application','initiated_emergence_loan_application',
+        'member_saving'=>function($query){
+            $query->where('financial_year_id',getFinancialYearId());
+        }
+        ])->where('id',Auth::user()->member_id)
+        ->first();
 
         if ($member) {
-
-           
 
             if ($loan_type == 2) {
 
@@ -89,7 +93,7 @@ class LoanApplication extends Model
         //check if loan plan is within this year
         $loan_end_date =processDate(Carbon::now());
         $expected_end_date =$loan_end_date->addMonths($plan);
-        $end_year =Carbon::now()->endOfYear()->subDays(11);
+        $end_year =FinancialYear::latest('id')->where('is_active',true)->first()->end_date;
         // $end_year =Carbon::now()->endOfYear()->subDays(11);
 
         if ($expected_end_date->greaterThanOrEqualTo($end_year)) {
@@ -113,6 +117,9 @@ class LoanApplication extends Model
             'uuid'               =>(string)Str::ordereduuid()
         ]);
 
+        // update Financial year
+        $loan->financial_year_id =getFinancialYearId();
+        $loan->save();
 
         return [
             'success' =>true,

@@ -30,6 +30,10 @@ class LoanContractObserver
                 'payment_date'       =>$start_date->addMonths($i),
                 'uuid'               =>(string)Str::orderedUuid()
             ]);
+
+               // update Financial year
+            $installment->financial_year_id =getFinancialYearId();
+            $installment->save();
         }
 
         $loan_application =LoanApplication::where('id',$loanContract->loan_application_id)->first();

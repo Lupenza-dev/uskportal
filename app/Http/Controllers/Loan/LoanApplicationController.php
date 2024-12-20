@@ -93,6 +93,10 @@ class LoanApplicationController extends Controller
                 'uuid'                =>(string)Str::orderedUuid()
             ]);
 
+              // update Financial year
+            $guarantor->financial_year_id =getFinancialYearId();
+            $guarantor->save();
+
             SendNotification::dispatch($guarantor,4)->onQueue('emails');
 
         }

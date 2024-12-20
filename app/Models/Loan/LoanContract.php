@@ -50,6 +50,10 @@ class LoanContract extends Model
         'created_by'         =>Auth::user()->id,
        ]);
 
+         // update Financial year
+         $loan->financial_year_id =getFinancialYearId();
+         $loan->save();
+
        return $loan;
     }
 

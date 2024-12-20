@@ -58,6 +58,12 @@
             <span key="t-file-manager">Expenditures</span>
         </a>
     </li>
+    <li>
+        <a href="{{ route('open.balance')}}" class="waves-effect">
+            <i class="bx bx-list-ol"></i>
+            <span key="t-file-manager">Open Balances</span>
+        </a>
+    </li>
     {{-- <li>
         <a href="{{ url('roles.index')}}" class="waves-effect">
             <i class="bx bx-align-justify"></i>

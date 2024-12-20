@@ -50,7 +50,7 @@
                                     <input type="date" class="form-control" name="end_date" value="{{$requests['end_date'] ?? null}}" >
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="">Member</label>
+                                    <label for="">Loan Status</label>
                                   {!! Form::select('loan_status',['GRANTED'=>'GRANTED','CLOSED'=>'CLOSED'],$requests['loan_status'] ?? null, ['class' => 'form-control','placeholder'=>'Choose Status']) !!}
                                 </div>
                             </div>

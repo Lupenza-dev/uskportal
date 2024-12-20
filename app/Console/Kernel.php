@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Jobs\FeePastDueCalculation;
+use App\Jobs\FinancialYearJob;
 use App\Jobs\LoanPenaltCalculation;
 use App\Jobs\StockPastDueCalculation;
 use Illuminate\Console\Scheduling\Schedule;
@@ -25,12 +26,18 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             LoanPenaltCalculation::dispatch()->onQueue('emails');
         })->dailyAt('23:50');
+
         $schedule->call(function () {
             StockPastDueCalculation::dispatch()->onQueue('emails');
         })->dailyAt('23:58');
+
         $schedule->call(function () {
             FeePastDueCalculation::dispatch()->onQueue('emails');
         })->dailyAt('23:50');
+
+        $schedule->call(function () {
+            FinancialYearJob::dispatch()->onQueue('emails');
+        })->yearlyOn(12, 25, '00:00');;
     }
 
     /**

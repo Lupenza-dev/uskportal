@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Traits\PaymentTrait;
 use App\Jobs\SendNotification;
 use App\Models\Loan\LoanContract;
+use App\Models\Management\FinancialYear;
+use App\Models\Management\OpenBalance;
 use App\Models\Payment\Expenditure;
 use App\Models\Payment\Payment;
 use App\Models\Payment\PaymentRequest;
@@ -43,6 +45,12 @@ class PaymentController extends Controller
     {   
         $payments =PaymentRequest::with('member','loan')->where('status',0)->orWhere('status',2)->latest()->get();
         return view('payments.all_payment_request',compact('payments'));
+    }
+
+    public function openBalances(){
+        $balances =OpenBalance::with('financial_year')->latest()->get();
+        $financial_years =FinancialYear::latest()->get();
+        return view('payments.open_balances',compact('balances','financial_years'));
     }
 
     /**
@@ -320,6 +328,23 @@ class PaymentController extends Controller
         ]));
         
 
+        return response()->json([
+            'success' =>true,
+            'message' =>'Action Done Successfully',
+        ],200);
+    }
+
+    public function storeOpenBalance(Request $request){
+        $valid = $this->validate($request, [
+            'amount' => 'required',
+            'financial_year_id' => 'required',
+        ]);
+
+        $data = OpenBalance::create([
+            'balance' =>$valid['amount'],
+            'financial_year_id' =>$valid['financial_year_id'],
+        ]);
+        
         return response()->json([
             'success' =>true,
             'message' =>'Action Done Successfully',

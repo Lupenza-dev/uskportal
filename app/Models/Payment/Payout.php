@@ -12,7 +12,7 @@ use Auth;
 class Payout extends Model
 {
     use HasFactory;
-    protected $fillable=['amount','payment_reference','payment_date','bank_account_no','created_by','member_id','loan_contract_id','uuid'];
+    protected $fillable=['amount','payment_reference','payment_date','bank_account_no','created_by','member_id','loan_contract_id','uuid','financial_year_id'];
     public static function store($payment,$loan){
         $payout =Payout::create([
             'amount' =>$payment['amount'],
@@ -24,6 +24,10 @@ class Payout extends Model
             'member_id'        =>$loan['member_id'],
             'loan_contract_id' =>$loan['id']
         ]);
+
+         // update Financial year
+         $payout->financial_year_id =getFinancialYearId();
+         $payout->save();
     }
 
     public function member(){

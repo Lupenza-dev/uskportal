@@ -19,12 +19,12 @@ class AdminController extends Controller
 {
     public function index(){
         $members =Member::count();
-        $member_savings =MemberSavingSummary::get();
-        $loans =LoanContract::get();
-        $stock  =StockPastDue::get();
-        $fee    =FeePastDue::get();
-        $installments =Installment::get();
-        $expected_balance =Payment::sum('amount') - Payout::sum('amount') - Expenditure::sum('amount');
+        $member_savings =MemberSavingSummary::where('financial_year_id',getFinancialYearId())->get();
+        $loans =LoanContract::where('financial_year_id',getFinancialYearId())->get();
+        $stock  =StockPastDue::where('financial_year_id',getFinancialYearId())->get();
+        $fee    =FeePastDue::where('financial_year_id',getFinancialYearId())->get();
+        $installments =Installment::where('financial_year_id',getFinancialYearId())->get();
+        $expected_balance =Payment::where('financial_year_id',getFinancialYearId())->sum('amount') - Payout::where('financial_year_id',getFinancialYearId())->sum('amount') - Expenditure::where('financial_year_id',getFinancialYearId())->sum('amount');
         return view('dashboards.admin_dashboard',compact('members','member_savings','loans','stock','fee','installments','expected_balance'));
     }
 
@@ -40,6 +40,7 @@ class AdminController extends Controller
                         whereYear( 'payment_date', date( 'Y'))
                         //->where('payment_for_month',date('F Y'))
                         ->where('payment_type','stock')
+                        ->where('financial_year_id',getFinancialYearId())
                         ->selectRaw( 'SUM(amount) as count, YEAR(payment_date) year,MONTH(payment_date) month ' )
                         ->groupBy( 'year', 'month' )
                         ->get( array( 'month', 'count' ));
@@ -76,6 +77,7 @@ class AdminController extends Controller
     public function loanDisbursed(){
         $monthly_sales =LoanContract::
                         whereYear( 'start_date', date( 'Y'))
+                        ->where('financial_year_id',getFinancialYearId())
                         ->selectRaw( 'SUM(total_amount) as count, YEAR(start_date) year,MONTH(start_date) month ' )
                         ->groupBy( 'year', 'month' )
                         ->get( array( 'month', 'count' ));

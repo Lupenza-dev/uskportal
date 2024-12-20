@@ -41,7 +41,8 @@ class FeePastDueCalculation implements ShouldQueue
         $lastMonth = Carbon::parse(Carbon::now()->subMonth()->endOfMonth())->endOfMonth()->format('F Y');
         $members =MemberSavingSummary::with('member')
         ->whereNotIn('fee_for_month',[$lastMonth,Carbon::now()->format('F Y')])
-        ->orWhere('fees',null)
+        ->where('financial_year_id',getFinancialYearId())
+       // ->orWhere('fees',null)
         ->get();
        // $members =MemberSavingSummary::where('stock',0)->get();
         if ($members->count() > 0) {
@@ -66,6 +67,7 @@ class FeePastDueCalculation implements ShouldQueue
                             $stock =FeePastDue::updateOrCreate([
                                 'member_id' =>$member->member_id,
                                 'fee_for_month' =>$lastPurchaseDate->endOfMonth()->format('F Y'),
+                                'financial_year_id'  =>getFinancialYearId()
                             ],[
                                 'past_due_days'   =>$pastDueDays,
                                 'penalty'         =>$pastDueDays * 1500,

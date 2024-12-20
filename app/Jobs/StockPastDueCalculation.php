@@ -24,7 +24,7 @@ class StockPastDueCalculation implements ShouldQueue
      *
      * @return void
      */
-    public $notificationQueue = 'emails';
+    // public $notificationQueue = 'emails';
 
 
     public function __construct()
@@ -44,9 +44,9 @@ class StockPastDueCalculation implements ShouldQueue
         $members   =MemberSavingSummary::
                     whereNotIn('stock_for_month',[$lastMonth,Carbon::now()->format('F Y')])
                     ->where('financial_year_id',getFinancialYearId())
-                    ->orWhere('stock',0)
+                   // ->orWhere('stock',0)
                     ->get();
-                    
+
         if ($members->count() > 0) {
 
             foreach ($members as $member) {
@@ -67,6 +67,7 @@ class StockPastDueCalculation implements ShouldQueue
                             $stock =StockPastDue::updateOrCreate([
                                 'member_id' =>$member->member_id,
                                 'stock_for_month' =>$lastPurchaseDate->endOfMonth()->format('F Y'),
+                                'financial_year_id'  =>getFinancialYearId()
                             ],[
                                 'past_due_days'      =>$pastDueDays,
                                 'penalty'            =>$pastDueDays * 1500,
@@ -90,6 +91,27 @@ class StockPastDueCalculation implements ShouldQueue
             }
            
            
+        }else{
+            $members =Member::whereDoesntHave('member_saving', function ($query) {
+                $query->where('financial_year_id',getFinancialYearId());
+            })
+            ->get();
+            foreach ($members as $member) {
+               
+                $member_saving =MemberSavingSummary::updateOrcreate([
+                    'member_id'          =>$member->id,
+                    'financial_year_id'  =>getFinancialYearId()
+                ],[
+                    'stock'              =>0,
+                    'last_stock_amount'  =>0,
+                    'uuid'               =>(string)Str::orderedUuid(),
+                    'stock_for_month'    =>Null,
+                    'past_due_days'      =>0,
+                    'stock_penalty'      =>0,
+                ]); 
+
+
+            }
         }
 
         return true;

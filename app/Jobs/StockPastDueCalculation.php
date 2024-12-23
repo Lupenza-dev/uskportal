@@ -46,7 +46,7 @@ class StockPastDueCalculation implements ShouldQueue
                     ->where('financial_year_id',getFinancialYearId())
                    // ->orWhere('stock',0)
                     ->get();
-
+        dd($members);
         if ($members->count() > 0) {
 
             foreach ($members as $member) {

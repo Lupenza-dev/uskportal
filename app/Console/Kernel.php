@@ -37,7 +37,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->call(function () {
             FinancialYearJob::dispatch()->onQueue('emails');
-        })->yearlyOn(12, 25, '00:00');;
+        })->yearlyOn(12, 22, '01:00');;
     }
 
     /**

@@ -42,8 +42,8 @@ class HomeController extends Controller
        // return $this->loanPenalty();
         // LoanPenaltCalculation::dispatch();
         // FinancialYearJob::dispatch();
-        StockPastDueCalculation::dispatch();
-       // FeePastDueCalculation::dispatch();
+        // StockPastDueCalculation::dispatch();
+       FeePastDueCalculation::dispatch();
         return true;
     }
 

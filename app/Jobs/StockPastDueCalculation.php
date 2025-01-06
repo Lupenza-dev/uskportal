@@ -42,11 +42,13 @@ class StockPastDueCalculation implements ShouldQueue
         Log::info('StockPastDueCalculation');
         $lastMonth = Carbon::parse(Carbon::now()->subMonth()->endOfMonth())->endOfMonth()->format('F Y');
         $members   =MemberSavingSummary::
-                    whereNotIn('stock_for_month',[$lastMonth,Carbon::now()->format('F Y')])
+                    where(function($query) use ($lastMonth){
+                        $query->whereNotIn('stock_for_month',[$lastMonth,Carbon::now()->format('F Y')])
+                        ->orWhereNull('last_purchase_date');
+                      })
                     ->where('financial_year_id',getFinancialYearId())
-                   // ->orWhere('stock',0)
                     ->get();
-        dd($members);
+
         if ($members->count() > 0) {
 
             foreach ($members as $member) {
@@ -62,7 +64,6 @@ class StockPastDueCalculation implements ShouldQueue
                        // $member->past_due_days =$member->past_due_days + $pastDueDays;
                        // $member->stock_penalty =$member->stock_penalty + ($pastDueDays * 1500);
                        // $member->save();
-                        
                        if ($pastDueDays > 0) {
                             $stock =StockPastDue::updateOrCreate([
                                 'member_id' =>$member->member_id,

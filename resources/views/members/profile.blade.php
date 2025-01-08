@@ -5,7 +5,6 @@
         background-color: aliceblue !important;
     }
 </style>
-
 <div class="page-content">
     <div class="container-fluid">
 

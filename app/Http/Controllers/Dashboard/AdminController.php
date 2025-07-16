@@ -14,6 +14,7 @@ use App\Models\Payment\Payment;
 use App\Models\Payment\Payout;
 use DateTime;
 use Illuminate\Http\Request;
+use  App\Models\Management\OpenBalance;
 
 class AdminController extends Controller
 {
@@ -24,7 +25,7 @@ class AdminController extends Controller
         $stock  =StockPastDue::where('financial_year_id',getFinancialYearId())->get();
         $fee    =FeePastDue::where('financial_year_id',getFinancialYearId())->get();
         $installments =Installment::where('financial_year_id',getFinancialYearId())->get();
-        $expected_balance =Payment::where('financial_year_id',getFinancialYearId())->sum('amount') - Payout::where('financial_year_id',getFinancialYearId())->sum('amount') - Expenditure::where('financial_year_id',getFinancialYearId())->sum('amount');
+        $expected_balance =(Payment::where('financial_year_id',getFinancialYearId())->sum('amount') + OpenBalance::where('financial_year_id',getFinancialYearId())->sum('balance')) - Payout::where('financial_year_id',getFinancialYearId())->sum('amount') - Expenditure::where('financial_year_id',getFinancialYearId())->sum('amount');
         return view('dashboards.admin_dashboard',compact('members','member_savings','loans','stock','fee','installments','expected_balance'));
     }
 

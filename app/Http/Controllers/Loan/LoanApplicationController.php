@@ -37,6 +37,8 @@ class LoanApplicationController extends Controller
                         $query->where('level','!=','CANCELED');
                     })
                    ->where('member_id',Auth::user()->member_id)
+                   ->where('financial_year_id',getFinancialYearId())
+                   ->latest()
                     ->get();
         return view('loans.loan_request',compact('requests'));
     }

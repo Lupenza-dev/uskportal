@@ -140,8 +140,8 @@
                                                 <tr>
                                                     <th>Total Paid In</th>
                                                     <td>{{ number_format($loan->current_balance)}}</td>
-                                                    <th>Outstanding Amount</th>
-                                                    <td>{{ number_format($loan->outstanding_amount)}}</td>
+                                                    <th>Total Outstanding Amount</th>
+                                                    <td>{{ number_format($loan->outstanding_amount + $loan->penalt_amount)}}</td>
                                                 </tr>
                                                 <tr>
                                                     <th>Past Due Days </th>

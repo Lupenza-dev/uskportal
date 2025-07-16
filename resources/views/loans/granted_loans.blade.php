@@ -93,7 +93,7 @@
                                         <td>{{ number_format($loan->total_amount) }}</td>
                                         <td>{{ number_format($loan->total_loan_amount) }}</td>
                                         <td>{{ number_format($loan->installment_amount) }}</td>
-                                        <td>{{ number_format($loan->outstanding_amount) }}</td>
+                                        <td>{{ number_format($loan->outstanding_amount + $loan->penalt_amount) }}</td>
                                         <td>{{ number_format($loan->plan) }}</td>
                                         <td>{{ number_format($loan->interest_amount) }}</td>
                                         <td>{{ $loan->loan_type->name ?? "N/A"}}</td>

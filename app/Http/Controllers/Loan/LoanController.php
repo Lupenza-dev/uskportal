@@ -28,7 +28,9 @@ class LoanController extends Controller
                 ->when($requests,function($query) use ($requests){
                     $query->withfilters($requests);
                 })
-                ->latest('start_date')->get();
+                ->latest('start_date')
+                ->where('financial_year_id',getFinancialYearId())
+                ->get();
         $members =Member::pluck('last_name','id')->all();
         return view('loans.granted_loans',compact('loans','members','requests'));
     }

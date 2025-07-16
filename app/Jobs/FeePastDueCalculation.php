@@ -46,7 +46,9 @@ class FeePastDueCalculation implements ShouldQueue
                     })
                 // ->whereNotIn('fee_for_month',[$lastMonth,Carbon::now()->format('F Y')])
                     ->where('financial_year_id',getFinancialYearId())
+                    ->where('fees' ,'<',getExpectedFee())
                 // ->orWhere('fees',null)
+                    //->where('member_id',10)
                     ->get();
        // $members =MemberSavingSummary::where('stock',0)->get();
         if ($members->count() > 0) {

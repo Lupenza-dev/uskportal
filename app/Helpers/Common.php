@@ -67,6 +67,30 @@ if(!function_exists('getFinancialYearId')){
 
 }
 
+if(!function_exists('getMonths')){
+    function getMonths() {
+       $start_date =FinancialYear::latest('id')->where('is_active',true)->first()->start_date;
+       return Carbon::parse($start_date)->diffInMonths(Carbon::now()) + 1;
+    }
+
+}
+
+if(!function_exists('getExpectedFee')){
+    function getExpectedFee() {
+       $days =getMonths();
+
+       if ($days > 0) {
+        $expected_amount =15000 * $days;
+       }
+       else{
+        $expected_amount =15000;
+       }
+
+       return $expected_amount;
+    }
+
+}
+
 
 
 

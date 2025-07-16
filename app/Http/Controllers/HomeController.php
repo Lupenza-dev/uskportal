@@ -39,11 +39,13 @@ class HomeController extends Controller
     }
 
     public function testJobs(){
+        return getMonths();
+        // return getExpectedFee();
        // return $this->loanPenalty();
         // LoanPenaltCalculation::dispatch();
         // FinancialYearJob::dispatch();
         // StockPastDueCalculation::dispatch();
-       FeePastDueCalculation::dispatch();
+       // FeePastDueCalculation::dispatch();
         return true;
     }
 

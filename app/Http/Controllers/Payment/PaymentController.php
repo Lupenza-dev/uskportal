@@ -31,19 +31,19 @@ class PaymentController extends Controller
      */
     public function index()
     {   
-        $payments =Payment::latest()->get();
+        $payments =Payment::latest()->where('financial_year_id',getFinancialYearId())->get();
         return view('payments.all_payment',compact('payments'));
     }
 
     public function paymentDisbursed()
     {   
-        $payments =Payout::with('member','loan')->latest()->get();
+        $payments =Payout::with('member','loan')->where('financial_year_id',getFinancialYearId())->latest()->get();
         return view('payments.all_payment_disbursed',compact('payments'));
     }
 
     public function pendingPayments()
     {   
-        $payments =PaymentRequest::with('member','loan')->where('status',0)->orWhere('status',2)->latest()->get();
+        $payments =PaymentRequest::with('member','loan')->where('status',0)->orWhere('status',2)->where('financial_year_id',getFinancialYearId())->latest()->get();
         return view('payments.all_payment_request',compact('payments'));
     }
 

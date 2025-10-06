@@ -28,7 +28,7 @@ class Member extends Model
     }
 
     public function member_saving(){
-        return $this->hasOne(MemberSavingSummary::class);
+        return $this->hasOne(MemberSavingSummary::class)->where('financial_year_id',getFinancialYearId());
     }
 
     public function initiated_loan_application(){

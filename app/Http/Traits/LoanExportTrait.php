@@ -56,7 +56,7 @@ trait LoanExportTrait {
 
     public function generateMemberExcel($members){
         return (new FastExcel($this->loanGenerator($members)))->download('MemberReport.xlsx',function($member){
-            $total_savings =MemberSavingSummary::sum('stock');
+            $total_savings =MemberSavingSummary::where('financial_year_id',getFinancialYearId())->sum('stock');
             return [
             'Full name'      =>ucwords($member->member_name),
             'Phone Number'   =>$member?->phone_number,

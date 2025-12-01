@@ -68,12 +68,12 @@ class LoanApplication extends Model
                 }
             } else {
 
-                // if ($amount > 1000000) {
-                //     return [
-                //         'success' =>false,
-                //         'errors'  =>'You Can not take emergence loan more than 1M'
-                //     ];
-                // }
+                if ($amount > 1000000) {
+                    return [
+                        'success' =>false,
+                        'errors'  =>'You Can not take emergence loan more than 1M'
+                    ];
+                }
 
                 if ($member->active_emergence_loan) {
                     return [
@@ -96,12 +96,12 @@ class LoanApplication extends Model
         $end_year =FinancialYear::latest('id')->where('is_active',true)->first()->end_date;
         // $end_year =Carbon::now()->endOfYear()->subDays(11);
 
-        // if ($expected_end_date->greaterThanOrEqualTo($end_year)) {
-        //     return [
-        //         'success' =>false,
-        //         'errors'  =>"Selected Plan will make the loan end date to be out of this year $end_year"
-        //     ];
-        // }
+        if ($expected_end_date->greaterThanOrEqualTo($end_year)) {
+            return [
+                'success' =>false,
+                'errors'  =>"Selected Plan will make the loan end date to be out of this year $end_year"
+            ];
+        }
 
         $loan =LoanApplication::create([
             'member_id'         =>Auth::user()->member_id,

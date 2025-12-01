@@ -68,12 +68,12 @@ class LoanApplication extends Model
                 }
             } else {
 
-                if ($amount > 1000000) {
-                    return [
-                        'success' =>false,
-                        'errors'  =>'You Can not take emergence loan more than 1M'
-                    ];
-                }
+                // if ($amount > 1000000) {
+                //     return [
+                //         'success' =>false,
+                //         'errors'  =>'You Can not take emergence loan more than 1M'
+                //     ];
+                // }
 
                 if ($member->active_emergence_loan) {
                     return [

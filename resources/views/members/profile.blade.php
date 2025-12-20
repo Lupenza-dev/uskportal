@@ -190,12 +190,21 @@
                                                     <td>{{ $stock->past_due_days }}</td> 
                                                     <td>{{ number_format($stock->penalty) }}</td> 
                                                     <td>{{ number_format($stock->penalty_paid) }}</td> 
-                                                    <td>{{ number_format($stock->outstanding_amount) }}</td> 
-                                                    <td>{!! $stock->paid_status_format !!}</td> 
+                                                    <td>{{ number_format($stock->outstanding_amount) }}</td>
+                                                    <td>{!! $stock->paid_status_format !!}</td>
                                                 </tr>
                                                 @endforeach
-                                             </tbody> 
-                                               
+                                             </tbody>
+                                             <tfoot>
+                                                <tr class="table-info">
+                                                    <th colspan="3" class="text-end">Total:</th>
+                                                    <th>{{ number_format($member->stock_dues->sum('penalty')) }}</th>
+                                                    <th>{{ number_format($member->stock_dues->sum('penalty_paid')) }}</th>
+                                                    <th>{{ number_format($member->stock_dues->sum('outstanding_amount')) }}</th>
+                                                    <th></th>
+                                                </tr>
+                                             </tfoot>
+
                                             </table>
                                         </div>
                                     </div>
@@ -266,11 +275,18 @@
                                                     <td>{{ $payment->payment_reference }}</td> 
                                                     <td>{{ number_format($payment->amount) }}</td> 
                                                     <td>{{ $payment->payment_type }}</td> 
-                                                    <td>{{ $payment->payment_for_month }}</td> 
+                                                    <td>{{ $payment->payment_for_month }}</td>
                                                 </tr>
                                                 @endforeach
-                                             </tbody> 
-                                               
+                                             </tbody>
+                                             <tfoot>
+                                                <tr class="table-info">
+                                                    <th colspan="3" class="text-end">Total:</th>
+                                                    <th>{{ number_format($member->stock_payments->sum('amount')) }}</th>
+                                                    <th colspan="2"></th>
+                                                </tr>
+                                             </tfoot>
+
                                             </table>
                                         </div>
                                     </div>
@@ -296,11 +312,18 @@
                                                     <td>{{ $payment->payment_reference }}</td> 
                                                     <td>{{ number_format($payment->amount) }}</td> 
                                                     <td>{{ $payment->payment_type }}</td> 
-                                                    <td>{{ $payment->payment_for_month }}</td> 
+                                                    <td>{{ $payment->payment_for_month }}</td>
                                                 </tr>
                                                 @endforeach
-                                             </tbody> 
-                                           
+                                             </tbody>
+                                             <tfoot>
+                                                <tr class="table-info">
+                                                    <th colspan="3" class="text-end">Total:</th>
+                                                    <th>{{ number_format($member->fee_payments->sum('amount')) }}</th>
+                                                    <th colspan="2"></th>
+                                                </tr>
+                                             </tfoot>
+
                                         </table>
                                     </div>
                                 </div>

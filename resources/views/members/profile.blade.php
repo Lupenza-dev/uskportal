@@ -224,12 +224,21 @@
                                                     <td>{{ $fee->past_due_days }}</td> 
                                                     <td>{{ number_format($fee->penalty) }}</td> 
                                                     <td>{{ number_format($fee->penalty_paid) }}</td> 
-                                                    <td>{{ number_format($fee->outstanding_amount) }}</td> 
-                                                    <td>{!! $fee->paid_status_format !!}</td> 
+                                                    <td>{{ number_format($fee->outstanding_amount) }}</td>
+                                                    <td>{!! $fee->paid_status_format !!}</td>
                                                 </tr>
                                                 @endforeach
-                                             </tbody> 
-                                               
+                                             </tbody>
+                                             <tfoot>
+                                                <tr class="table-info">
+                                                    <th colspan="3" class="text-end">Total:</th>
+                                                    <th>{{ number_format($member->fee_dues->sum('penalty')) }}</th>
+                                                    <th>{{ number_format($member->fee_dues->sum('penalty_paid')) }}</th>
+                                                    <th>{{ number_format($member->fee_dues->sum('outstanding_amount')) }}</th>
+                                                    <th></th>
+                                                </tr>
+                                             </tfoot>
+
                                             </table>
                                         </div>
                                     </div>

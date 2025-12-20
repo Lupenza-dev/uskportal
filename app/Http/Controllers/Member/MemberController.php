@@ -199,7 +199,24 @@ class MemberController extends Controller
     }
 
     public function generateReport(){
-        $members =Member::with('member_saving','payments')->orderBy('first_name','ASC')->get();
+        //$members =Member::with('member_saving','payments')->orderBy('first_name','ASC')->get();
+        $members =Member::with(['payments',
+            'member_saving'=>function($query){
+            $query->where('financial_year_id',getFinancialYearId());
+            },
+            'stock_dues'=>function($query){
+            $query->where('financial_year_id',getFinancialYearId());
+            },
+            'fee_dues'=>function($query){
+            $query->where('financial_year_id',getFinancialYearId());
+            },
+            'stock_payments'=>function($query){
+            $query->where('financial_year_id',getFinancialYearId());
+            },
+            'fee_payments'=>function($query){
+            $query->where('financial_year_id',getFinancialYearId());
+            },
+        ])->orderBy('first_name','ASC')->get();
         return self::generateMemberExcel($members);
     }
 }

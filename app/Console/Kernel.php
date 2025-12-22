@@ -23,21 +23,22 @@ class Kernel extends ConsoleKernel
         // $schedule->job(new StockPastDueCalculation)->dailyAt('23:55');
         // $schedule->job(new FeePastDueCalculation)->dailyAt('23:58');
         // $schedule->job(new LoanPenaltCalculation)->dailyAt('23:50');
-        $schedule->call(function () {
-            LoanPenaltCalculation::dispatch()->onQueue('emails');
-        })->dailyAt('23:50');
+        //un comment from here
+        // $schedule->call(function () {
+        //     LoanPenaltCalculation::dispatch()->onQueue('emails');
+        // })->dailyAt('23:50');
 
-        $schedule->call(function () {
-            StockPastDueCalculation::dispatch()->onQueue('emails');
-        })->dailyAt('23:58');
+        // $schedule->call(function () {
+        //     StockPastDueCalculation::dispatch()->onQueue('emails');
+        // })->dailyAt('23:58');
 
-        $schedule->call(function () {
-            FeePastDueCalculation::dispatch()->onQueue('emails');
-        })->dailyAt('23:50');
+        // $schedule->call(function () {
+        //     FeePastDueCalculation::dispatch()->onQueue('emails');
+        // })->dailyAt('23:50');
 
-        $schedule->call(function () {
-            FinancialYearJob::dispatch()->onQueue('emails');
-        })->yearlyOn(12, 22, '01:00');;
+        // $schedule->call(function () {
+        //     FinancialYearJob::dispatch()->onQueue('emails');
+        // })->yearlyOn(12, 22, '01:00');
     }
 
     /**

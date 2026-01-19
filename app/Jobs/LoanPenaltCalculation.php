@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\Loan\Installment;
 use App\Models\Loan\LoanContract;
+use App\Models\Loan\PenaltCycle;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -35,46 +36,77 @@ class LoanPenaltCalculation implements ShouldQueue
      */
     public function handle()
     {
-        $installments =Installment::where('status','OPEN')
-        ->where('payment_date','<',Carbon::now())
-        ->get();
-
+        $installments = Installment::where('status', 'OPEN')
+            ->where('payment_date', '<', Carbon::now())
+            ->where('id',118)
+            ->get();
         foreach ($installments as $installment) {
-        $past_due_days =Carbon::now()->diffInDays($installment->payment_date);
+            $past_due_days = Carbon::now()->diffInDays($installment->payment_date);
 
-        if ($installment->penalt_amount != 0 or $installment->penalt_amount_paid > 0) {
-        $penalt_amount =$installment->penalt_amount;
-        }else{
-        $penalt_amount =0.05 * $installment->installment_amount;
+            // if ($installment->penalt_amount != 0 or $installment->penalt_amount_paid > 0) {
+            //     $penalt_amount = $installment->penalt_amount;
+            // } else {
+            //     $penalt_amount = 0.05 * $installment->installment_amount;
+            // }
+
+            // check if this month already penaltized
+
+            $penaltized =PenaltCycle::where(['installment_id'=>$installment->id,'penalt_month'=>Carbon::now()->format('F Y')])
+            ->where('created_at', '>=', Carbon::now()->subDays(31))
+            ->first();
+
+
+            if ($penaltized) {
+                $penalt_amount =$penaltized->penalt_amount;
+            } else {
+                
+                $real_penalt_amount = 0.05 * ($installment->installment_amount + $installment->penalt_amount);
+                $penalt_amount =$real_penalt_amount + $installment->penalt_amount;
+            }
+            
+
+            $installment->past_due_days   = $past_due_days;
+            $installment->penalt_amount   = $penalt_amount;
+            $installment->past_due_amount = $penalt_amount + $installment->installment_amount;
+            $installment->save();
+
+            // save penalt histories
+            PenaltCycle::updateOrCreate(
+                [
+                    'installment_id' => $installment->id,
+                    'penalt_month'   => Carbon::now()->format('F Y')
+                ],
+                [
+                    'penalt_amount'   =>$installment->penalt_amount,
+                    'penalt_amount_paid'   =>$installment->penalt_amount_paid,
+                    'past_due_amount'   =>$installment->past_due_amount,
+                    'installment_amount'   =>$installment->installment_amount,
+                    'installment_penalted'   =>$installment->installment_amount + $installment->penalt_amount,
+                    'loan_contract_id'       =>$installment->loan_contract_id
+                ]
+            );
+
+            $contract = LoanContract::with('installments')->where('id', $installment->loan_contract_id)->first();
+            $high_due_inst = Installment::where('loan_contract_id', $installment->loan_contract_id)
+                ->where('outstanding_amount', '>', 0)
+                ->orderby('id', 'DESC')
+                ->first();
+
+            $cont_due_day = $high_due_inst->past_due_days;
+
+            if ($contract->highest_past_due_days >= $cont_due_day) {
+                $highest_past_due_days = $contract->highest_past_due_days;
+            } else {
+                $highest_past_due_days = $cont_due_day;
+            }
+
+            $contract->penalt_amount         = $contract->installments->sum('penalt_amount');
+            $contract->past_due_amount       = $contract->installments->sum('past_due_amount');
+            $contract->past_due_days         = $cont_due_day;
+            $contract->highest_past_due_days = $highest_past_due_days;
+            $contract->save();
         }
 
-        $installment->past_due_days   =$past_due_days;
-        $installment->penalt_amount   =$penalt_amount;
-        $installment->past_due_amount =$penalt_amount + $installment->installment_amount;
-        $installment->save();
-
-        $contract =LoanContract::with('installments')->where('id',$installment->loan_contract_id)->first();
-        $high_due_inst =Installment::where('loan_contract_id',$installment->loan_contract_id)
-                    ->where('outstanding_amount','>',0)
-                    ->orderby('id','DESC')
-                    ->first();
-
-        $cont_due_day = $high_due_inst->past_due_days;
-
-        if($contract->highest_past_due_days >= $cont_due_day){
-        $highest_past_due_days = $contract->highest_past_due_days;
-        }else{
-        $highest_past_due_days = $cont_due_day;
-        }
-
-        $contract->penalt_amount         = $contract->installments->sum('penalt_amount');
-        $contract->past_due_amount       = $contract->installments->sum('past_due_amount');
-        $contract->past_due_days         = $cont_due_day;
-        $contract->highest_past_due_days = $highest_past_due_days;
-        $contract->save();
-
-        }
-        
         return true;
     }
 }

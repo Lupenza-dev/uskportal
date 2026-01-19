@@ -12,7 +12,7 @@ class FeePastDue extends Model
     protected $fillable =['member_id','fee_for_month','past_due_days','uuid','penalty','financial_year_id'];
 
     public function getPaidStatusFormatAttribute(){
-        switch ($this->paid_status) {
+        switch ($this->paid_status and $this->outstanding_amount == 0) {
             case 1:
                 $label ="<span class='badge badge-pill badge-soft-success font-size-11'>Paid</span>";
                 break;

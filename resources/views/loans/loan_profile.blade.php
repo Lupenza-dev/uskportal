@@ -97,6 +97,9 @@
                                   <button class="nav-link rounded-5" id="repayment-tab" data-bs-toggle="tab" type="button" data-bs-target="#repayment-tab-pane" role="tab" aria-selected="false"> <span class="nav-text">Repayment Schedule</span> </button>
                                 </li>
                                 <li class="nav-item" role="presentation">
+                                  <button class="nav-link rounded-5" id="repayment-tab" data-bs-toggle="tab" type="button" data-bs-target="#penalt-cycle-tab-pane" role="tab" aria-selected="false"> <span class="nav-text">Loan Penalt Cycles</span> </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
                                   <button class="nav-link rounded-5" id="attachment-tab" data-bs-toggle="tab" data-bs-target="#attachment-tab-pane"  type="button" role="tab" aria-selected="false"><span class="nav-text">Repayments</span></button>
                                 </li>
                               </ul>
@@ -225,6 +228,42 @@
                                         </table>
                                     </div>
                                 </div>
+                                <div class="tab-pane fade" id="penalt-cycle-tab-pane" role="tabpanel" aria-labelledby="repayment-tab" tabindex="0">
+                                    <div class="col-md-12" style="padding: 10px 2px 10px 2px">
+                                        <h4 class="card-title text-center">Penalt Cycles</h4>
+                                        <div class="table-responsive">
+                                            <table id="datatable3" class="table table-bordered dt-responsive  nowrap w-100">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No</th>
+                                                        <th>ID</th>
+                                                        <th>Installment No</th>
+                                                        <th>Installment Date</th>
+                                                        <th>Installment Amount</th>
+                                                        <th>Installment Penalted Amount</th>
+                                                        <th>Penalt Amount</th>
+                                                        <th>Penalt Month</th> 
+                                                      </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($loan->penalt_cycles as $cycle)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>{{ $cycle->id }}</td>
+                                                        <td>{{ $cycle->installment?->installment_no}}</td>
+                                                        <td>{{ date('d, M-Y',strtotime($cycle->installment->payment_date ))}}</td>
+                                                        <td>{{ number_format($cycle->installment_amount) }}</td> 
+                                                        <td>{{ number_format($cycle->installment_penalted) }}</td> 
+                                                        <td>{{ number_format($cycle->penalt_amount) }}</td> 
+                                                        <td>{{ $cycle->penalt_month }}</td> 
+                                                    </tr>
+                                                    @endforeach
+                                                 </tbody> 
+                                               
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
                               </div>
     
                         </div>
@@ -284,6 +323,11 @@
 <script>
     $(document).ready(function(){
         $('#datatable1').DataTable();
+  });
+</script>
+<script>
+    $(document).ready(function(){
+        $('#datatable3').DataTable();
   });
 </script>
 <script>

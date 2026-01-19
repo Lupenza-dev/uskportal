@@ -78,6 +78,9 @@ class LoanContract extends Model
     public function installments(){
         return $this->hasMany(Installment::class);
     }
+    public function penalt_cycles(){
+        return $this->hasMany(PenaltCycle::class);
+    }
 
     public function payments(){
         return $this->hasMany(Payment::class);

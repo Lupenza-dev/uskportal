@@ -92,6 +92,25 @@ if(!function_exists('getExpectedFee')){
 }
 
 
+if(!function_exists('checkLoanPlanValidty')){
+    function checkLoanPlanValidty($amount, $plan) {
+       if ($amount >= 100000 && $amount <= 699999 && $plan > 3) {
+        return [
+            'error' => "Plan should not exceed 3 months for this amount of $amount"
+        ];
+       }
+       else if ($amount >= 700000 && $amount <= 2999999 && $plan > 6){
+        return [
+            'error' => "Plan should not exceed 6 months for this amount of $amount"
+        ];
+       }
+       
+       // Return null or success indicator if validation passes
+       return null;
+    }
+}
+
+
 
 
 

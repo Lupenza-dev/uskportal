@@ -67,8 +67,19 @@ class LoanApplicationController extends Controller
     public function store(LoanApplicationRequest $request)
     {
         $vali_data =$request->validated();
-        $plan      =$request->plan ?? 1;
+        $plan     =$request->plan ?? 1;
+            
+        if ($vali_data['loan_type'] == 2) {
+            $check_plan_validty =checkLoanPlanValidty($vali_data['amount'],$plan);
+            if ($check_plan_validty['error'] ?? null) {
+                return response()->json([
+                    'success' =>false,
+                    'errors' =>$check_plan_validty['error']
+                ],500);
+            }
 
+        }
+        
         if (count($vali_data['guarantors']) != 2) {
             return response()->json([
                 'success' =>false,

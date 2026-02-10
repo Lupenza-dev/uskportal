@@ -36,9 +36,9 @@ class Kernel extends ConsoleKernel
         //     FeePastDueCalculation::dispatch()->onQueue('emails');
         // })->dailyAt('23:50');
 
-        // $schedule->call(function () {
-        //     FinancialYearJob::dispatch()->onQueue('emails');
-        // })->yearlyOn(12, 22, '01:00');
+        $schedule->call(function () {
+            FinancialYearJob::dispatch()->onQueue('emails');
+        })->yearlyOn(02, 10, '20:15');
     }
 
     /**

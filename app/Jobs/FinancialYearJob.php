@@ -41,19 +41,20 @@ class FinancialYearJob implements ShouldQueue
      */
     public function handle()
     {
-        // DB::transaction(function(){
+        DB::transaction(function(){
             
-        //     $last_year =FinancialYear::latest('id')->first();
+            $last_year =FinancialYear::latest('id')->first();
 
-        //     FinancialYear::create([
-        //         'name'      =>Carbon::parse($last_year->end_date)->format('Y').'/'.Carbon::parse($last_year->end_date)->addYear(1)->format('Y'),
-        //         'start_date' =>$last_year->end_date,
-        //         'end_date' =>Carbon::parse($last_year->end_date)->addYear(1),
-        //     ]);
+            FinancialYear::create([
+                'name'      =>Carbon::parse($last_year->end_date)->format('Y').'/'.Carbon::parse($last_year->end_date)->addYear(1)->format('Y'),
+                'start_date' =>"2026-02-10",
+                // 'start_date' =>$last_year->end_date,
+                'end_date' =>Carbon::parse($last_year->end_date)->addYear(1),
+            ]);
 
-        //     $last_year->is_active =false;
-        //     $last_year->save();
-        // });
+            $last_year->is_active =false;
+            $last_year->save();
+     
 
         $members =Member::whereDoesntHave('member_saving', function ($query) {
             $query->where('financial_year_id',getFinancialYearId());
@@ -75,6 +76,7 @@ class FinancialYearJob implements ShouldQueue
 
 
         }
+    });
        
     }
 }

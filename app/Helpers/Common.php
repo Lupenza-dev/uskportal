@@ -80,10 +80,10 @@ if(!function_exists('getExpectedFee')){
        $days =getMonths();
 
        if ($days > 0) {
-        $expected_amount =15000 * $days;
+        $expected_amount =10000 * $days;
        }
        else{
-        $expected_amount =15000;
+        $expected_amount =10000;
        }
 
        return $expected_amount;

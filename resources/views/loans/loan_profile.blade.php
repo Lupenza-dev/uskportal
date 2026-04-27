@@ -241,7 +241,8 @@
                                                         <th>Installment Date</th>
                                                         <th>Installment Amount</th>
                                                         <th>Installment Penalted Amount</th>
-                                                        <th>Penalt Amount</th>
+                                                        <th>Old Penalt Amount</th>
+                                                        <th>New Penalt</th>
                                                         <th>Penalt Month</th> 
                                                       </tr>
                                                 </thead>
@@ -255,6 +256,7 @@
                                                         <td>{{ number_format($cycle->installment_amount) }}</td> 
                                                         <td>{{ number_format($cycle->installment_penalted) }}</td> 
                                                         <td>{{ number_format($cycle->penalt_amount) }}</td> 
+                                                        <td>{{ number_format($cycle->real_penalt_amount) }}</td> 
                                                         <td>{{ $cycle->penalt_month }}</td> 
                                                     </tr>
                                                     @endforeach

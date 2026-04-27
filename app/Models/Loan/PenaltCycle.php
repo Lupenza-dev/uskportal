@@ -10,7 +10,7 @@ class PenaltCycle extends Model
     use HasFactory;
 
     protected $fillable =[
-        'installment_id','penalt_amount','penalt_amount_paid','past_due_amount','penalt_month','installment_amount','installment_penalted','loan_contract_id'
+        'installment_id','penalt_amount','penalt_amount_paid','past_due_amount','penalt_month','installment_amount','installment_penalted','loan_contract_id','real_penalt_amount'
     ];
 
     public function installment(){

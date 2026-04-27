@@ -61,7 +61,7 @@ class LoanPenaltCalculation implements ShouldQueue
 
 
             if ($penaltized) {
-                $penalt_amount =$penaltized->penalt_amount;
+                $penalt_amount =$penaltized->real_penalt_amount;
             } else {
                 
                 $real_penalt_amount = 0.05 * ($installment->installment_amount + $installment->penalt_amount);
@@ -86,7 +86,8 @@ class LoanPenaltCalculation implements ShouldQueue
                     'past_due_amount'   =>$installment->past_due_amount,
                     'installment_amount'   =>$installment->installment_amount,
                     'installment_penalted'   =>$installment->installment_amount + $installment->penalt_amount,
-                    'loan_contract_id'       =>$installment->loan_contract_id
+                    'loan_contract_id'       =>$installment->loan_contract_id,
+                    'real_penalt_amount'     =>$penalt_amount
                 ]
             );
 

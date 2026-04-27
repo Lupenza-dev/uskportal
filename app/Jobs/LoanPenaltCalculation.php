@@ -12,6 +12,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
+
 
 class LoanPenaltCalculation implements ShouldQueue
 {
@@ -36,9 +38,11 @@ class LoanPenaltCalculation implements ShouldQueue
      */
     public function handle()
     {
+        Log::info('Loan Penalt Calculation');
+
         $installments = Installment::where('status', 'OPEN')
             ->where('payment_date', '<', Carbon::now())
-            ->where('id',118)
+            // ->where('id',118)
             ->get();
         foreach ($installments as $installment) {
             $past_due_days = Carbon::now()->diffInDays($installment->payment_date);

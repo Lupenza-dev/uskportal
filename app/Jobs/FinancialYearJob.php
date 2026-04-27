@@ -72,6 +72,7 @@ class FinancialYearJob implements ShouldQueue
                 'stock_for_month'    =>Null,
                 'past_due_days'      =>0,
                 'stock_penalty'      =>0,
+                'fees'               =>0,
             ]); 
 
 

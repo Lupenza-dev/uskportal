@@ -34,7 +34,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->call(function () {
             FeePastDueCalculation::dispatch()->onQueue('emails');
-        })->dailyAt('23:50');
+        })->dailyAt('23:55');
 
         $schedule->call(function () {
             FinancialYearJob::dispatch()->onQueue('emails');

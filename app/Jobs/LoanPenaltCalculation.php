@@ -64,14 +64,14 @@ class LoanPenaltCalculation implements ShouldQueue
                 $penalt_amount =$penaltized->real_penalt_amount;
             } else {
                 
-                $real_penalt_amount = 0.05 * ($installment->installment_amount + $installment->penalt_amount);
+                $real_penalt_amount = 0.05 * ($installment->outstanding_amount + $installment->penalt_amount);
                 $penalt_amount =$real_penalt_amount + $installment->penalt_amount;
             }
             
 
             $installment->past_due_days   = $past_due_days;
             $installment->penalt_amount   = $penalt_amount;
-            $installment->past_due_amount = $penalt_amount + $installment->installment_amount;
+            $installment->past_due_amount = $penalt_amount + $installment->outstanding_amount;
             $installment->save();
 
             // save penalt histories

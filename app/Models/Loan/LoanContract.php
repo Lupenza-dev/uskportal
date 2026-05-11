@@ -8,10 +8,11 @@ use App\Models\Member\Member;
 use App\Models\Payment\Payment;
 use Str;
 use Auth;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class LoanContract extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
 
     protected $fillable=['member_id','loan_application_id','loan_type_id','total_amount','total_loan_amount','installment_amount','plan',
     'fee_amount','interest_amount','interest_rate','status','outstanding_amount','contract_code','start_date','expected_end_date','created_by','uuid','disbursment_date','financial_year_id'];

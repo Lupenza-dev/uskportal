@@ -85,7 +85,7 @@ class LoanPenaltCalculation implements ShouldQueue
                     'penalt_amount_paid'   =>$installment->penalt_amount_paid,
                     'past_due_amount'   =>$installment->past_due_amount,
                     'installment_amount'   =>$installment->installment_amount,
-                    'installment_penalted'   =>$installment->installment_amount + $installment->penalt_amount,
+                    'installment_penalted'   =>$installment->outstanding_amount + $installment->penalt_amount,
                     'loan_contract_id'       =>$installment->loan_contract_id,
                     'real_penalt_amount'     =>$penalt_amount
                 ]

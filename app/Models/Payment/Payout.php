@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Str;
 use Auth;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Payout extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
     protected $fillable=['amount','payment_reference','payment_date','bank_account_no','created_by','member_id','loan_contract_id','uuid','financial_year_id'];
     public static function store($payment,$loan){
         $payout =Payout::create([

@@ -26,4 +26,12 @@ class Installment extends Model
         }
         return $label;
     }
+
+    public function installmentPenalt(){
+        return $this->hasMany(PenaltCycle::class,'installment_id','id');
+    }
+
+     public function loanContract(){
+        return $this->belongsTo(LoanContract::class,'loan_contract_id','id');
+    }
 }

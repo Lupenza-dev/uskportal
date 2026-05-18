@@ -55,20 +55,20 @@ class LoanPenaltCalculation implements ShouldQueue
 
             // check if this month already penaltized
 
-            $penaltized =PenaltCycle::where(['installment_id'=>$installment->id,'penalt_month'=>Carbon::now()->format('F Y')])
-            ->where('created_at', '>=', Carbon::now()->subDays(31))
-            ->first();
+            $penaltized = PenaltCycle::where(['installment_id' => $installment->id, 'penalt_month' => Carbon::now()->format('F Y')])
+                ->where('created_at', '>=', Carbon::now()->subDays(31))
+                ->first();
 
 
             if ($penaltized) {
-                $penalt_amount =$penaltized->real_penalt_amount;
-                $past_penalt_paid =$penaltized->penalt_amount_paid;
+                $penalt_amount = $penaltized->real_penalt_amount;
+                $past_penalt_paid = $penaltized->penalt_amount_paid;
             } else {
-                $past_penalt_paid =0;
+                $past_penalt_paid = 0;
                 $real_penalt_amount = 0.05 * ($installment->outstanding_amount + $installment->penalt_amount);
-                $penalt_amount =$real_penalt_amount + $installment->penalt_amount;
+                $penalt_amount = $real_penalt_amount + $installment->penalt_amount;
             }
-            
+
 
             $installment->past_due_days   = $past_due_days;
             $installment->penalt_amount   = $penalt_amount - $past_penalt_paid;
@@ -82,13 +82,13 @@ class LoanPenaltCalculation implements ShouldQueue
                     'penalt_month'   => Carbon::now()->format('F Y')
                 ],
                 [
-                    'penalt_amount'   =>$installment->penalt_amount,
-                    'penalt_amount_paid'   =>$installment->penalt_amount_paid,
-                    'past_due_amount'   =>$installment->past_due_amount,
-                    'installment_amount'   =>$installment->installment_amount,
-                    'installment_penalted'   =>$installment->outstanding_amount + $installment->penalt_amount,
-                    'loan_contract_id'       =>$installment->loan_contract_id,
-                    'real_penalt_amount'     =>$penalt_amount,
+                    'penalt_amount'   => $installment->penalt_amount,
+                    'penalt_amount_paid'   => $installment->penalt_amount_paid,
+                    'past_due_amount'   => $installment->past_due_amount,
+                    'installment_amount'   => $installment->installment_amount,
+                    'installment_penalted'   => $installment->outstanding_amount + $installment->penalt_amount,
+                    'loan_contract_id'       => $installment->loan_contract_id,
+                    'real_penalt_amount'     => $penalt_amount,
                 ]
             );
 
@@ -105,6 +105,13 @@ class LoanPenaltCalculation implements ShouldQueue
             } else {
                 $highest_past_due_days = $cont_due_day;
             }
+
+            //update installment penalt sum before contract
+            $penalt_amount_total = $installment->installmentPenalt->sum('real_penalt_amount');
+            $penalt_amount_paid_total = $installment->installmentPenalt->sum('penalt_amount_paid');
+            $installment->penalt_amount = $penalt_amount_total - $penalt_amount_paid_total;
+            $installment->save();
+
 
             $contract->penalt_amount         = $contract->installments->sum('penalt_amount');
             $contract->past_due_amount       = $contract->installments->sum('past_due_amount');

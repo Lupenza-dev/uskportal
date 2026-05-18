@@ -112,9 +112,10 @@ class LoanPenaltCalculation implements ShouldQueue
             $installment->penalt_amount = $penalt_amount_total - $penalt_amount_paid_total;
             $installment->save();
 
-
-            $contract->penalt_amount         = $contract->installments->sum('penalt_amount');
-            $contract->past_due_amount       = $contract->installments->sum('past_due_amount');
+            $find_installments =Installment::where('loan_contract_id', $installment->loan_contract_id)
+                            ->get();
+            $contract->penalt_amount         = $find_installments->sum('penalt_amount');
+            $contract->past_due_amount       = $find_installments->sum('past_due_amount');
             $contract->past_due_days         = $cont_due_day;
             $contract->highest_past_due_days = $highest_past_due_days;
             $contract->save();
